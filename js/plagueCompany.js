@@ -39,7 +39,7 @@
 	
 	//游戏变量
 	point=0;
-	game=0;
+	var game=0;
 	
 	//时间显示
 	accumulate=0;	//累积时间

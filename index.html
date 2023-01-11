@@ -35,7 +35,6 @@
     require(["esri/config", "esri/Map", "esri/views/MapView","esri/views/SceneView","esri/layers/FeatureLayer","esri/widgets/Feature","esri/views/ui/DefaultUI","esri/core/promiseUtils"], function(esriConfig, Map, MapView,SceneView,FeatureLayer,Feature,DefaultUI,promiseUtils) {
 
       esriConfig.apiKey = "AAPK850ccb67284f4bb48e629a83a301529eQnTVfVtAZmL7wc7ah3t90KMXXYyRtz9RY3ya3sPnzxZ2fvttfWbvCs73IVub-fLE";
-
       const map = new Map({
         //basemap: "arcgis-topographic" // Basemap layer service
         basemap: "hybrid",
@@ -98,7 +97,7 @@
       }
 
       function color1(i) {
-        if(dead[i]==population[i]){
+        if(dead[i]===population[i]){
           return "rgb(110,110,110)";
         }else{
         const theColor=infected[i]/population[i];
@@ -464,11 +463,21 @@
                               if (!promiseUtils.isAbortError(err)) {
                                   throw err;}
                           });
-                        Selecting=$("#feature-node").text();
-                        if(Selecting){
-                        document . getElementById("CountryName").innerHTML=Selecting+"感染情况";}
-                        else{document . getElementById("CountryName").innerHTML="世界感染情况";}
+                        selectName();
+                        function selectName(){Selecting=$("#feature-node").text();
+                        if(Selecting){//查询国家，更改饼图
+                            document.getElementById("CountryName").innerHTML=Selecting+"感染情况";}
+                            else{document . getElementById("CountryName").innerHTML="世界感染情况";}
 
+                        }
+                        if (game === 0) {
+                          setTimeout(selectName(),3000);
+                          if (confirm("你将从" + Selecting + "开始游戏")) {
+                            game = 1;
+                            infected[name.indexOf(Selecting)]++;
+                            main();
+                          }
+                        }
                         //confirm("hi "+Selecting);
                       });
                   });
@@ -506,132 +515,6 @@
     //大屏
     setInterval(getTime,1000);
   </script><!--这是那个时间的代码-->
-  <script>
-    var myChart = echarts.init(document.getElementById('sort'));
-    var option;
-    var data=[];
-    var data1=[];
-    var data2=[];
-    for(let i=0;i<11;++i){
-      data.push(Math.round(Math.random()*100));
-      data1.push(Math.round(Math.random()*200));
-      data2.push(Math.round(Math.random()*200));
-    }
-    option ={
-      color:["#8d8d8d","#c20000","#09ab00"],//红绿蓝
-      tooltip: {
-        trigger: 'axis',
-        axisPointer: {            // 坐标轴指示器，坐标轴触发有效
-          type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-        }
-      },
-      xAxis:{
-        max:'dataMax', //表示用数据的最大值作为X轴最大值，视觉效果更好
-      },
-      yAxis:{
-        type:'category',
-        data:['a','b','c','d','e','f','g','h','i','j','k'],
-        //inverse:true, //设为true表示Y轴 从下往上 是 从小到大 的排序
-
-
-        animationDuration:300, //表示第一次柱条排序动画的时长为300
-        animationDurationUpdate:300, //表示第一次后 柱条排序动画的时长为300
-        max:10 //只显示最大的9条 ，不设置则显示所有柱条
-      },
-      series:[
-        {
-          //realtimeSort: true, //设为true表示开启Y轴的动态排序效果
-          name: '死亡',
-          type: 'bar',
-          stack: '总量',
-          data: data,
-          label: {
-            show: false,
-            position: 'insideRight',
-            valueAnimation: true //如果想要实时改变标签，需要将 series.label.valueAnimation 设为 true ??有待学习不明白
-          },
-          animationDuration:300, //表示第一次柱条排序动画的时长为300
-          animationDurationUpdate:300, //表示第一次后 柱条排序动画的时长为300
-        },{
-          //realtimeSort:true, //设为true表示开启Y轴的动态排序效果
-          name:'感染',
-          type:'bar',
-          stack: '总量',
-          data:data1,
-          label:{
-            show:false,
-            position:'insideRight',
-            valueAnimation:true //如果想要实时改变标签，需要将 series.label.valueAnimation 设为 true ??有待学习不明白
-          },
-          animationDuration:300, //表示第一次柱条排序动画的时长为300
-          animationDurationUpdate:300, //表示第一次后 柱条排序动画的时长为300
-        },{
-          realtimeSort:true, //设为true表示开启Y轴的动态排序效果
-          name:'健康',
-          type:'bar',
-          stack: '总量',
-          data:data2,
-          label:{
-            show:false,
-            position:'insideRight',
-            valueAnimation:true //如果想要实时改变标签，需要将 series.label.valueAnimation 设为 true ??有待学习不明白
-          },
-          animationDuration:300, //表示第一次柱条排序动画的时长为300
-          animationDurationUpdate:300, //表示第一次后 柱条排序动画的时长为300
-        }
-      ],
-      legend:{
-        data: ['死亡', '感染', '健康'],
-        //show:true
-      },
-      //animationDuration 设为 0，表示第一份数据不需要从 0 开始动画（如果希望从 0 开始则设为和 animationDurationUpdate 相同的值）
-      animationDuration:0,
-
-      //animationDurationUpdate 建议设为 3000 表示每次更新动画时长，这一数值应与调用 setOption 改变数据的频率相同
-      animationDurationUpdate:3000,
-
-      AnimationEasing:'linear',
-      AnimationEasingUpdate:'linear'
-    };
-
-    function run(){
-      var data = option.series[0].data;
-      var data1 = option.series[1].data;
-      var data2 = option.series[2].data;
-      for(var i=0;i<data.length;++i){
-        if(Math.random() > 0.9){
-          data[i] += Math.round(Math.random() * 2000);
-          data1[i] += Math.round(Math.random() * 2000);
-          data2[i] += Math.round(Math.random() * 2000);
-          const sumdata=data[i]+data1[i]+data2[i];
-          data[i]=data[i]/sumdata;
-          data1[i]=data1[i]/sumdata;
-          data2[i]=data2[i]/sumdata;
-        }
-        else{
-          data[i] += Math.round(Math.random() * 200);
-          data1[i] += Math.round(Math.random() * 200);
-          data2[i] += Math.round(Math.random() * 200);
-          const sumdata=data[i]+data1[i]+data2[i];
-          data[i]=data[i]/sumdata;
-          data1[i]=data1[i]/sumdata;
-          data2[i]=data2[i]/sumdata;
-        }
-      }
-      myChart.setOption(option);
-    }
-
-    setTimeout(function(){
-      run();
-    },0);
-
-    //以 animationDurationUpdate 的频率调用 setInterval，更新数据值，显示下一个时间点对应的柱条排序
-    setInterval(() => {
-      run();
-    }, 3000);
-
-    option && myChart.setOption(option);
-  </script><!--感染情况排序,echarts。min，js暂时不能用,现在用的是ifream，之后如果要传参数可能需要innerhtml或者改前面的引入-->
 </head>
 <body>
 <div class="header">
@@ -677,6 +560,5 @@
     </div>
   </div>
 </div>
-
 </body>
 </html>

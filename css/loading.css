@@ -1,0 +1,69 @@
+html,body{
+    margin: 0;
+    height: 100%;
+}
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0);
+}
+section {
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 0px solid red;
+}
+span{
+    width : 36px;
+    height: 36px;
+    border-radius: 50%;
+    position: relative;
+    background-color:white;
+}
+
+.a {
+    margin-right: 12px;
+    animation: animloader1 1s linear infinite alternate;
+}
+.b{
+    animation: animloader2 1s linear infinite alternate;
+}
+.c{
+    margin-left: 12px;
+    animation: animloader1 1s linear infinite alternate;
+}
+
+@keyframes animloader1
+{
+    0%{
+        margin-top: -12px;
+    }
+    33%{
+        margin-top: 12px;
+    }
+    66%{
+        margin-top: -12px;
+    }
+    100%{
+        margin-top: 12px;
+    }
+}
+@keyframes animloader2 {
+    0%{
+        margin-top: 12px;
+    }
+    33%{
+        margin-top: -12px;
+    }
+    66%{
+        margin-top: 12px;
+    }
+    100%{
+        margin-top: -12px;
+    }
+}
