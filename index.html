@@ -28,6 +28,7 @@
   <link href="https://js.arcgis.com/4.25/esri/themes/light/main.css" rel="stylesheet">
   <link href="css/index.css" rel="stylesheet">
   <script src="https://js.arcgis.com/4.25/"></script>
+  <script src="js/plagueCompany.js"></script>
   <script src="js/jquery.js" type="text/javascript"></script>
   <!--script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.1/dist/echarts.min.js"></script>不太理解为什么引入这个之后会出错-->
   <script>
@@ -80,8 +81,8 @@
 
       // Add parks with a class breaks renderer and unique symbols
       //一个用来变色的函数
-      function createFillSymbol(value) {
-        const getRandomColor = color1()
+      function createFillSymbol(value,i) {
+        const getRandomColor = color1(i)
         return {
           "value": value,
           "symbol": {
@@ -96,24 +97,272 @@
         };
       }
 
-      function color1() {
-        return "rgb(" + Math.round(Math.random() * 256) + "," + "0," + "0)";
+      function color1(i) {
+        if(dead[i]==population[i]){
+          return "rgb(110,110,110)";
+        }else{
+        const theColor=infected[i]/population[i];
+        return "rgb(" + Math.round(theColor* 256) + "," + "0," + "0)";}
       }
-
+      //population = [];
+      //var infected = new Array();
+      //dead = [];
       //上面函数value的返回值对应颜色，之后好像应该改成连续条带,之后要改成对应每个国家的
       function rend() {
         return {
           type: "unique-value",
-          field: "Continent",
+          field: "Country Name",
           uniqueValueInfos: [
-            createFillSymbol("Africa"),
-            createFillSymbol("Asia"),
-            createFillSymbol("Europe"),
-            createFillSymbol("North America"),
-            createFillSymbol("Oceania"),
-            createFillSymbol("South America"),
-            createFillSymbol("Antarctica"),
-            createFillSymbol("Australia")
+            createFillSymbol(name[0],0),
+            createFillSymbol(name[1],1),
+            createFillSymbol(name[2],2),
+            createFillSymbol(name[3],3),
+            createFillSymbol(name[4],4),
+            createFillSymbol(name[5],5),
+            createFillSymbol(name[6],6),
+            createFillSymbol(name[7],7),
+            createFillSymbol(name[8],8),
+            createFillSymbol(name[9],9),
+            createFillSymbol(name[10],10),
+            createFillSymbol(name[11],11),
+            createFillSymbol(name[12],12),
+            createFillSymbol(name[13],13),
+            createFillSymbol(name[14],14),
+            createFillSymbol(name[15],15),
+            createFillSymbol(name[16],16),
+            createFillSymbol(name[17],17),
+            createFillSymbol(name[18],18),
+            createFillSymbol(name[19],19),
+            createFillSymbol(name[20],20),
+            createFillSymbol(name[21],21),
+            createFillSymbol(name[22],22),
+            createFillSymbol(name[23],23),
+            createFillSymbol(name[24],24),
+            createFillSymbol(name[25],25),
+            createFillSymbol(name[26],26),
+            createFillSymbol(name[27],27),
+            createFillSymbol(name[28],28),
+            createFillSymbol(name[29],29),
+            createFillSymbol(name[30],30),
+            createFillSymbol(name[31],31),
+            createFillSymbol(name[32],32),
+            createFillSymbol(name[33],33),
+            createFillSymbol(name[34],34),
+            createFillSymbol(name[35],35),
+            createFillSymbol(name[36],36),
+            createFillSymbol(name[37],37),
+            createFillSymbol(name[38],38),
+            createFillSymbol(name[39],39),
+            createFillSymbol(name[40],40),
+            createFillSymbol(name[41],41),
+            createFillSymbol(name[42],42),
+            createFillSymbol(name[43],43),
+            createFillSymbol(name[44],44),
+            createFillSymbol(name[45],45),
+            createFillSymbol(name[46],46),
+            createFillSymbol(name[47],47),
+            createFillSymbol(name[48],48),
+            createFillSymbol(name[49],49),
+            createFillSymbol(name[50],50),
+            createFillSymbol(name[51],51),
+            createFillSymbol(name[52],52),
+            createFillSymbol(name[53],53),
+            createFillSymbol(name[54],54),
+            createFillSymbol(name[55],55),
+            createFillSymbol(name[56],56),
+            createFillSymbol(name[57],57),
+            createFillSymbol(name[58],58),
+            createFillSymbol(name[59],59),
+            createFillSymbol(name[60],60),
+            createFillSymbol(name[61],61),
+            createFillSymbol(name[62],62),
+            createFillSymbol(name[63],63),
+            createFillSymbol(name[64],64),
+            createFillSymbol(name[65],65),
+            createFillSymbol(name[66],66),
+            createFillSymbol(name[67],67),
+            createFillSymbol(name[68],68),
+            createFillSymbol(name[69],69),
+            createFillSymbol(name[70],70),
+            createFillSymbol(name[71],71),
+            createFillSymbol(name[72],72),
+            createFillSymbol(name[73],73),
+            createFillSymbol(name[74],74),
+            createFillSymbol(name[75],75),
+            createFillSymbol(name[76],76),
+            createFillSymbol(name[77],77),
+            createFillSymbol(name[78],78),
+            createFillSymbol(name[79],79),
+            createFillSymbol(name[80],80),
+            createFillSymbol(name[81],81),
+            createFillSymbol(name[82],82),
+            createFillSymbol(name[83],83),
+            createFillSymbol(name[84],84),
+            createFillSymbol(name[85],85),
+            createFillSymbol(name[86],86),
+            createFillSymbol(name[87],87),
+            createFillSymbol(name[88],88),
+            createFillSymbol(name[89],89),
+            createFillSymbol(name[90],90),
+            createFillSymbol(name[91],91),
+            createFillSymbol(name[92],92),
+            createFillSymbol(name[93],93),
+            createFillSymbol(name[94],94),
+            createFillSymbol(name[95],95),
+            createFillSymbol(name[96],96),
+            createFillSymbol(name[97],97),
+            createFillSymbol(name[98],98),
+            createFillSymbol(name[99],99),
+            createFillSymbol(name[100],100),
+            createFillSymbol(name[101],101),
+            createFillSymbol(name[102],102),
+            createFillSymbol(name[103],103),
+            createFillSymbol(name[104],104),
+            createFillSymbol(name[105],105),
+            createFillSymbol(name[106],106),
+            createFillSymbol(name[107],107),
+            createFillSymbol(name[108],108),
+            createFillSymbol(name[109],109),
+            createFillSymbol(name[110],110),
+            createFillSymbol(name[111],111),
+            createFillSymbol(name[112],112),
+            createFillSymbol(name[113],113),
+            createFillSymbol(name[114],114),
+            createFillSymbol(name[115],115),
+            createFillSymbol(name[116],116),
+            createFillSymbol(name[117],117),
+            createFillSymbol(name[118],118),
+            createFillSymbol(name[119],119),
+            createFillSymbol(name[120],120),
+            createFillSymbol(name[121],121),
+            createFillSymbol(name[122],122),
+            createFillSymbol(name[123],123),
+            createFillSymbol(name[124],124),
+            createFillSymbol(name[125],125),
+            createFillSymbol(name[126],126),
+            createFillSymbol(name[127],127),
+            createFillSymbol(name[128],128),
+            createFillSymbol(name[129],129),
+            createFillSymbol(name[130],130),
+            createFillSymbol(name[131],131),
+            createFillSymbol(name[132],132),
+            createFillSymbol(name[133],133),
+            createFillSymbol(name[134],134),
+            createFillSymbol(name[135],135),
+            createFillSymbol(name[136],136),
+            createFillSymbol(name[137],137),
+            createFillSymbol(name[138],138),
+            createFillSymbol(name[139],139),
+            createFillSymbol(name[140],140),
+            createFillSymbol(name[141],141),
+            createFillSymbol(name[142],142),
+            createFillSymbol(name[143],143),
+            createFillSymbol(name[144],144),
+            createFillSymbol(name[145],145),
+            createFillSymbol(name[146],146),
+            createFillSymbol(name[147],147),
+            createFillSymbol(name[148],148),
+            createFillSymbol(name[149],149),
+            createFillSymbol(name[150],150),
+            createFillSymbol(name[151],151),
+            createFillSymbol(name[152],152),
+            createFillSymbol(name[153],153),
+            createFillSymbol(name[154],154),
+            createFillSymbol(name[155],155),
+            createFillSymbol(name[156],156),
+            createFillSymbol(name[157],157),
+            createFillSymbol(name[158],158),
+            createFillSymbol(name[159],159),
+            createFillSymbol(name[160],160),
+            createFillSymbol(name[161],161),
+            createFillSymbol(name[162],162),
+            createFillSymbol(name[163],163),
+            createFillSymbol(name[164],164),
+            createFillSymbol(name[165],165),
+            createFillSymbol(name[166],166),
+            createFillSymbol(name[167],167),
+            createFillSymbol(name[168],168),
+            createFillSymbol(name[169],169),
+            createFillSymbol(name[170],170),
+            createFillSymbol(name[171],171),
+            createFillSymbol(name[172],172),
+            createFillSymbol(name[173],173),
+            createFillSymbol(name[174],174),
+            createFillSymbol(name[175],175),
+            createFillSymbol(name[176],176),
+            createFillSymbol(name[177],177),
+            createFillSymbol(name[178],178),
+            createFillSymbol(name[179],179),
+            createFillSymbol(name[180],180),
+            createFillSymbol(name[181],181),
+            createFillSymbol(name[182],182),
+            createFillSymbol(name[183],183),
+            createFillSymbol(name[184],184),
+            createFillSymbol(name[185],185),
+            createFillSymbol(name[186],186),
+            createFillSymbol(name[187],187),
+            createFillSymbol(name[188],188),
+            createFillSymbol(name[189],189),
+            createFillSymbol(name[190],190),
+            createFillSymbol(name[191],191),
+            createFillSymbol(name[192],192),
+            createFillSymbol(name[193],193),
+            createFillSymbol(name[194],194),
+            createFillSymbol(name[195],195),
+            createFillSymbol(name[196],196),
+            createFillSymbol(name[197],197),
+            createFillSymbol(name[198],198),
+            createFillSymbol(name[199],199),
+            createFillSymbol(name[200],200),
+            createFillSymbol(name[201],201),
+            createFillSymbol(name[202],202),
+            createFillSymbol(name[203],203),
+            createFillSymbol(name[204],204),
+            createFillSymbol(name[205],205),
+            createFillSymbol(name[206],206),
+            createFillSymbol(name[207],207),
+            createFillSymbol(name[208],208),
+            createFillSymbol(name[209],209),
+            createFillSymbol(name[210],210),
+            createFillSymbol(name[211],211),
+            createFillSymbol(name[212],212),
+            createFillSymbol(name[213],213),
+            createFillSymbol(name[214],214),
+            createFillSymbol(name[215],215),
+            createFillSymbol(name[216],216),
+            createFillSymbol(name[217],217),
+            createFillSymbol(name[218],218),
+            createFillSymbol(name[219],219),
+            createFillSymbol(name[220],220),
+            createFillSymbol(name[221],221),
+            createFillSymbol(name[222],222),
+            createFillSymbol(name[223],223),
+            createFillSymbol(name[224],224),
+            createFillSymbol(name[225],225),
+            createFillSymbol(name[226],226),
+            createFillSymbol(name[227],227),
+            createFillSymbol(name[228],228),
+            createFillSymbol(name[229],229),
+            createFillSymbol(name[230],230),
+            createFillSymbol(name[231],231),
+            createFillSymbol(name[232],232),
+            createFillSymbol(name[233],233),
+            createFillSymbol(name[234],234),
+            createFillSymbol(name[235],235),
+            createFillSymbol(name[236],236),
+            createFillSymbol(name[237],237),
+            createFillSymbol(name[238],238),
+            createFillSymbol(name[239],239),
+            createFillSymbol(name[240],240),
+            createFillSymbol(name[241],241),
+            createFillSymbol(name[242],242),
+            createFillSymbol(name[243],243),
+            createFillSymbol(name[244],244),
+            createFillSymbol(name[245],245),
+            createFillSymbol(name[246],246),
+            createFillSymbol(name[247],247),
+            createFillSymbol(name[248],248),
+            createFillSymbol(name[249],249),
           ]
         };
       }
@@ -158,7 +407,7 @@
                       const graphic = {
                           popupTemplate: {
                               //content: "Mouse over features to show details...",
-                              title: "为什么不行捏{COUNTRY}",
+                              title: "世界{COUNTRY}",
                               outFields: ["*"],
                               displayType: "list",
                               content:{type: "fields",
@@ -216,8 +465,11 @@
                                   throw err;}
                           });
                         Selecting=$("#feature-node").text();
+                        if(Selecting){
+                        document . getElementById("CountryName").innerHTML=Selecting+"感染情况";}
+                        else{document . getElementById("CountryName").innerHTML="世界感染情况";}
 
-                        confirm("hi "+Selecting);
+                        //confirm("hi "+Selecting);
                       });
                   });
                   });
@@ -398,12 +650,12 @@
   <div class="content-con">
     <div class="left-body" >
       <div class="left-top public-bg">
-        <div class="public-title">重点水质量检测区</div>
+        <div class="public-title">DNA分配</div>
         <iframe class="ifream1" src="html/bar-y-category.html"></iframe>
       </div>
 
       <div class="left-bottom public-bg">
-        <div class="public-title">企业污染排放情况</div>
+        <div class="public-title" id="CountryName">世界感染情况</div>
         <iframe class="ifream1" src="html/pie-simple.html"></iframe>
       </div>
     </div>
@@ -414,12 +666,12 @@
 
     <div class="right-body">
       <div class="right-top public-bg">
-        <div class="public-title">水质污染TOP5</div>
+        <div class="public-title">国家感染情况排行（百分比）</div>
         <iframe src="html/sort.html" class="ifream1"></iframe>
         <!--div id="sort"></div-->
       </div>
       <div class="right-bottom public-bg">
-        <div class="public-title">主要地区水流量</div>
+        <div class="public-title">解药研发进度</div>
         <div class="esri-widget" id="feature-node" style="background-color: rgba(13,50,95,0);color: white"></div>
       </div>
     </div>

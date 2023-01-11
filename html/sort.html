@@ -11,7 +11,7 @@
 <body>
 <div id="main" style="height: 90vh;width: 100vw;"></div>
 <script>
-    var myChart = echarts.init(document.getElementById('main'));
+    var myChart = echarts.init(document.getElementById('main'),'dark');
     var option;
     var data=[];
     var data1=[];
@@ -40,7 +40,7 @@
 
             animationDuration:300, //表示第一次柱条排序动画的时长为300
             animationDurationUpdate:300, //表示第一次后 柱条排序动画的时长为300
-            max:10 //只显示最大的9条 ，不设置则显示所有柱条
+            //max:10 //只显示最大的9条 ，不设置则显示所有柱条
         },
         series:[
             {
