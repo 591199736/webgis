@@ -28,13 +28,280 @@
   <link href="https://js.arcgis.com/4.25/esri/themes/light/main.css" rel="stylesheet">
   <link href="css/index.css" rel="stylesheet">
   <script src="https://js.arcgis.com/4.25/"></script>
-  <script src="js/plagueCompany.js"></script>
+  <!--script src="js/plagueCompany.js"></script-->
   <script src="js/jquery.js" type="text/javascript"></script>
   <!--script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.1/dist/echarts.min.js"></script>不太理解为什么引入这个之后会出错-->
+  <script>
+    //这里是可爱的后端，应该算是后端吧
+    //变量定义
+    //国家属性225个，从数据库读进来,id就是索引。
+    var ename=[];
+    var temperature = [];
+    var wealthy = [];
+    var density = [];
+
+    population = [];
+    infected = [];
+    dead = [];
+    var infeSpeed = new Array();
+    var mediSpeed = new Array();
+    var dieSpeed = new Array();
+    var downfall = new Array();
+
+    //邻域国家可能要用空间查询才行，看看前端的地图是ArcGIS的有无接口可以用
+
+    var tradeFriend = new Array();//贸易密切国。看看思敏有没有发挥她的聪明才智。没有的话，可以每个国家都只有一个贸易密切国，就是一个整型的数据，就是id，也就是索引。重点关注岛国就好。要复杂一点的话，看看能不能嵌套数组。
+
+    //病毒属性,初始值都是0
+    var antihot = 0;
+    var antiCold = 0;
+    var antiMedi = 0;
+    var serverity = 0;
+    var lethality = 0;
+
+    //世界变量
+    var mediPercent=0;
+    var allMediSpeed=0;
+    var mediStart=false;
+    var allPopu=800000000;//要看数据库里是多少
+    var allInfec=0;
+    var allDead=0;
+    var allHealth=0;
+    var allDownfall=0;
+
+    //游戏变量
+    var point=0;
+    var game=0;
+
+    //时间显示
+    var accumulate=0;	//累积时间
+    var year=2000;		//初始时间
+    var month=1;
+    var day=1;
+
+
+
+
+    var na=[];
+    //前端：选取初始国家，将该国家的infected[i]++，然后让game=1
+    $.getJSON('data/Data.json', function (data1) {
+      console.log("json文件数据", data1);
+      for(i=0;i<206;i++){
+        na[i]=data1.data[i].ename;
+        infected[i]=data1.data[i].infected;
+        population[i]=data1.data[i].population
+        dead[i]=0;
+        console.log("na"+i, na[i]);
+      }
+    });
+  ename=na;
+
+    //预定义main需要用的函数
+    function timePlus(){//时间递增函数,可以用他自带的对象Date，但这个肯定不会出错
+      var dayMax;
+      accumulate++;
+      day++;
+      if (month == 2) {
+        if (year % 4 == 0 && year / 100 != 0 || year % 400 == 0)
+          dayMax = 29;
+        else
+          dayMax = 28;
+      }
+      else if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12)
+        dayMax = 31;
+      else
+        dayMax = 30;
+      if (day > dayMax) {
+        day = day - dayMax;
+        month++;
+      }
+      if (month > 12) {
+        month = month - 12;
+        year++;
+      }
+      var nowTime = myYear+'年'+fillZero(myMonth)+'月'+fillZero(myToday)+'日';
+      //nowTime就是要显示的东西
+    };
+
+    function fillZero(str){//补0函数
+      var realNum;
+      if(str<10){
+        realNum = '0'+str;
+      }else{
+        realNum = str;
+      }
+      return realNum;
+    }
+
+
+
+    //邻域传染
+    function neighborInfect(i){
+      for (let i=0;i<10;i++){
+        //没死光，没全感染
+        if (infected[i]!=population[i]-dead[i]){
+          infected[i]=infected[i]+100;//每次向外输出100个病例，该不会有国家人少得只有几千吧
+          if (infected[i]>population[i]-dead[i])//全部被感染的话不能变多
+            infected[i]=population[i]-dead[i];
+        }
+      }
+    }
+
+    //内部传染
+    function innerInfect(i){
+      //能调用这个函数就说明一定有感染，没死光，没全感染。
+      infected[i]=infected[i]+infeSpeed[i]*(population[i]-infected[i]);
+      if (infected[i]>population[i]-dead[i])
+        infected[i]=population[i]-dead[i];
+    }
+
+    //死亡
+    function goDie(i){
+      if (dead[i]<population[i]){//没死光
+        dead[i]=dead[i]+dieSpeed[i]*infected[i];
+        infected[i]=infected[i]-dieSpeed[i]*infected[i];
+      }
+      if (dead[i]>population[i])
+        dead[i]=population[i]
+    }
+
+    //更新mediSpeed[i]
+    function refreshMediSpeed(i){
+      mediSpeed[i]=(lethality*wealthy[i]*4/serverity/antimedi+infected[i]*0.0000000002)/1000;
+    }
+    //更新infeSpeed[i]
+    function refreshInfeSpeed(i){
+      if (temperature[i]>0)
+        infeSpeed[i]=(infected[i]/population[i]+temperature[i]/10*antihot/10)/(wealthy[i]+1)*log人口密度;
+      else
+        infeSpeed[i]=(infected[i]/population[i]-temperature[i]/10*anticold/10)/(wealthy[i]+1)*log人口密度;//垮台以后经济=0，但还得感染
+    }
+
+    //更新dieSpeed[i]
+    function refreshDieSpeed(i){
+      dieSpeed[i]=(lethality+serverity*0.1-5)/wealthy[i]*0.005;
+      if(dieSpeed[i]<0)
+        dieSpeed[i]=0;
+    }
+    function refreshWorld(){
+      for (i = 0; i < ename.length; i++){
+        allInfec=0;
+        allDead=0;
+        allInfec=allInfec+infected[i];
+        allDead=allDead+dead[i];
+        allMediSpeed=allMediSpeed+mediSpeed[i];
+      }
+      allHealth=allPopu-allInfec-allDead;//或者剩下的就是健康人口，如果饼图可以有这个功能就可以不算。
+    };
+
+
+    //超级无敌循环函数main
+
+    function main(){//main每时间单元循环步骤
+      while(game==1){
+        timePlus;
+        point+=0.5;
+
+        for(i = 0; i < ename.length; i++){
+          //感染了并且没死光
+          if(infected[i]>0){
+            //没垮台
+            if (downfall[i]=false){
+              //if(dead[i]<population[i])，不需要，没垮台肯定没死光
+              refreshDieSpeed(i);							//更新死亡速率
+              if(mediStart){
+                refreshMediSpeed(i);					//更新解药速率
+              }
+              //没全感染，就感染，并且死亡
+              if(infected[i]<population[i]-dead[i]){
+                refreshInfeSpeed(i);					//更新感染速率
+                innerInfect(i);							//内部感染
+                goDie(i);								//死亡
+              }
+              //向外传染
+              if (infected[i]>=0.01*population[i]){
+                var neighbor=new Array;
+                //邻域查询，返回的id写进数组neighbor
+                neighborInfect(neighbor);				//邻域传染
+              }
+              //让它垮台！
+              if(dead[i]>=0.7*population[i]&&downfall[i]==false){
+                downfall[i]=true;
+                allDownfall++;
+              }
+            }
+            //垮台了
+            else{
+              mediSpeed[i]=0;
+              wealthy[i]=0;
+              //还没死光
+              if(dead[i]<population[i])
+                refreshDieSpeed(i);						//更新死亡速率
+              //还没全部感染
+              if(infected[i]<population[i]-dead[i]){
+                refreshInfeSpeed(i);					//更新感染速率
+                innerInfect(i);							//内部感染
+                goDie(i);								//死亡
+              }
+            }
+          }
+          //没死光，但没感染，可以给被感染的国家喊个加油。
+          else if(dead[i]!=population[i]){
+            if(mediStart==true && downfall[i]==false){
+              refreshMediSpeed(i);					//好吧，全人类要团结一致一起开始研发解药。
+            }
+          }
+          //死光了，所以也没有感染者了。因为都死了。
+          else{
+            mediSpeed[i]=0;
+          }
+          //完成研发！
+          if(mediPercent=100){
+            if(infected[i]>=1000)
+              infected[i]=infected[i]-1000;
+            if(infected[i]<1000)
+              infected[i]=0;
+          }
+        }//for每个国家结束
+
+
+        //求和看全世界的参数
+        //不能放在for每个国家里，看看能不能放在更新函数里
+        //不行，要判断是否大于国家人数有点麻烦，而且每轮就要更新很多次，可能显示会有问题。这里只更新一次
+        //这里饼图不能刷新啊啊啊啊，一刷新就又看着他变大一次。
+        //如果饼图可以控制刷新频率就可以这样。如果不行的话就……很麻烦。每更新一个国家就要更新一次他
+
+
+        //更新世界统计数据：allInfec、allDead、allMediSpeed、allHealth
+        refreshWorld;
+
+        //判断开始研发。这个最好能写进触发器。
+        if(allInfec>=50000){
+          mediStart=true;
+        }
+
+        mediPercent=mediPercent+mediSpeed[i];//显示的时候记得保留两位小数显示就行，但是不要动里面的数值
+        if(mediPercent>100){
+          mediPercent=100;
+        }
+
+        //游戏状态判断
+        if(allDead==allPopu)
+          game=2;//玩家胜利
+        if(allInfec==0&&allPopu-allDead!= 0)
+          game=3;//人类胜利
+
+
+        //在这里放显示函数，或者get的函数，每一轮结束的时候刷新一次
+      }
+    }
+
+  </script><!--程序运行-->
   <script>
     require(["esri/config", "esri/Map", "esri/views/MapView","esri/views/SceneView","esri/layers/FeatureLayer","esri/widgets/Feature","esri/views/ui/DefaultUI","esri/core/promiseUtils"], function(esriConfig, Map, MapView,SceneView,FeatureLayer,Feature,DefaultUI,promiseUtils) {
 
       esriConfig.apiKey = "AAPK850ccb67284f4bb48e629a83a301529eQnTVfVtAZmL7wc7ah3t90KMXXYyRtz9RY3ya3sPnzxZ2fvttfWbvCs73IVub-fLE";
+
       const map = new Map({
         //basemap: "arcgis-topographic" // Basemap layer service
         basemap: "hybrid",
@@ -101,7 +368,8 @@
           return "rgb(110,110,110)";
         }else{
         const theColor=infected[i]/population[i];
-        return "rgb(" + Math.round(theColor* 256) + "," + "0," + "0)";}
+        //return "rgb(" + Math.round(theColor* 256) + "," + "0," + "0)";}
+          return "rgb(255,0,0)";}
       }
       //population = [];
       //var infected = new Array();
@@ -110,258 +378,214 @@
       function rend() {
         return {
           type: "unique-value",
-          field: "Country Name",
+          field: "COUNTRY",
           uniqueValueInfos: [
-            createFillSymbol(name[0],0),
-            createFillSymbol(name[1],1),
-            createFillSymbol(name[2],2),
-            createFillSymbol(name[3],3),
-            createFillSymbol(name[4],4),
-            createFillSymbol(name[5],5),
-            createFillSymbol(name[6],6),
-            createFillSymbol(name[7],7),
-            createFillSymbol(name[8],8),
-            createFillSymbol(name[9],9),
-            createFillSymbol(name[10],10),
-            createFillSymbol(name[11],11),
-            createFillSymbol(name[12],12),
-            createFillSymbol(name[13],13),
-            createFillSymbol(name[14],14),
-            createFillSymbol(name[15],15),
-            createFillSymbol(name[16],16),
-            createFillSymbol(name[17],17),
-            createFillSymbol(name[18],18),
-            createFillSymbol(name[19],19),
-            createFillSymbol(name[20],20),
-            createFillSymbol(name[21],21),
-            createFillSymbol(name[22],22),
-            createFillSymbol(name[23],23),
-            createFillSymbol(name[24],24),
-            createFillSymbol(name[25],25),
-            createFillSymbol(name[26],26),
-            createFillSymbol(name[27],27),
-            createFillSymbol(name[28],28),
-            createFillSymbol(name[29],29),
-            createFillSymbol(name[30],30),
-            createFillSymbol(name[31],31),
-            createFillSymbol(name[32],32),
-            createFillSymbol(name[33],33),
-            createFillSymbol(name[34],34),
-            createFillSymbol(name[35],35),
-            createFillSymbol(name[36],36),
-            createFillSymbol(name[37],37),
-            createFillSymbol(name[38],38),
-            createFillSymbol(name[39],39),
-            createFillSymbol(name[40],40),
-            createFillSymbol(name[41],41),
-            createFillSymbol(name[42],42),
-            createFillSymbol(name[43],43),
-            createFillSymbol(name[44],44),
-            createFillSymbol(name[45],45),
-            createFillSymbol(name[46],46),
-            createFillSymbol(name[47],47),
-            createFillSymbol(name[48],48),
-            createFillSymbol(name[49],49),
-            createFillSymbol(name[50],50),
-            createFillSymbol(name[51],51),
-            createFillSymbol(name[52],52),
-            createFillSymbol(name[53],53),
-            createFillSymbol(name[54],54),
-            createFillSymbol(name[55],55),
-            createFillSymbol(name[56],56),
-            createFillSymbol(name[57],57),
-            createFillSymbol(name[58],58),
-            createFillSymbol(name[59],59),
-            createFillSymbol(name[60],60),
-            createFillSymbol(name[61],61),
-            createFillSymbol(name[62],62),
-            createFillSymbol(name[63],63),
-            createFillSymbol(name[64],64),
-            createFillSymbol(name[65],65),
-            createFillSymbol(name[66],66),
-            createFillSymbol(name[67],67),
-            createFillSymbol(name[68],68),
-            createFillSymbol(name[69],69),
-            createFillSymbol(name[70],70),
-            createFillSymbol(name[71],71),
-            createFillSymbol(name[72],72),
-            createFillSymbol(name[73],73),
-            createFillSymbol(name[74],74),
-            createFillSymbol(name[75],75),
-            createFillSymbol(name[76],76),
-            createFillSymbol(name[77],77),
-            createFillSymbol(name[78],78),
-            createFillSymbol(name[79],79),
-            createFillSymbol(name[80],80),
-            createFillSymbol(name[81],81),
-            createFillSymbol(name[82],82),
-            createFillSymbol(name[83],83),
-            createFillSymbol(name[84],84),
-            createFillSymbol(name[85],85),
-            createFillSymbol(name[86],86),
-            createFillSymbol(name[87],87),
-            createFillSymbol(name[88],88),
-            createFillSymbol(name[89],89),
-            createFillSymbol(name[90],90),
-            createFillSymbol(name[91],91),
-            createFillSymbol(name[92],92),
-            createFillSymbol(name[93],93),
-            createFillSymbol(name[94],94),
-            createFillSymbol(name[95],95),
-            createFillSymbol(name[96],96),
-            createFillSymbol(name[97],97),
-            createFillSymbol(name[98],98),
-            createFillSymbol(name[99],99),
-            createFillSymbol(name[100],100),
-            createFillSymbol(name[101],101),
-            createFillSymbol(name[102],102),
-            createFillSymbol(name[103],103),
-            createFillSymbol(name[104],104),
-            createFillSymbol(name[105],105),
-            createFillSymbol(name[106],106),
-            createFillSymbol(name[107],107),
-            createFillSymbol(name[108],108),
-            createFillSymbol(name[109],109),
-            createFillSymbol(name[110],110),
-            createFillSymbol(name[111],111),
-            createFillSymbol(name[112],112),
-            createFillSymbol(name[113],113),
-            createFillSymbol(name[114],114),
-            createFillSymbol(name[115],115),
-            createFillSymbol(name[116],116),
-            createFillSymbol(name[117],117),
-            createFillSymbol(name[118],118),
-            createFillSymbol(name[119],119),
-            createFillSymbol(name[120],120),
-            createFillSymbol(name[121],121),
-            createFillSymbol(name[122],122),
-            createFillSymbol(name[123],123),
-            createFillSymbol(name[124],124),
-            createFillSymbol(name[125],125),
-            createFillSymbol(name[126],126),
-            createFillSymbol(name[127],127),
-            createFillSymbol(name[128],128),
-            createFillSymbol(name[129],129),
-            createFillSymbol(name[130],130),
-            createFillSymbol(name[131],131),
-            createFillSymbol(name[132],132),
-            createFillSymbol(name[133],133),
-            createFillSymbol(name[134],134),
-            createFillSymbol(name[135],135),
-            createFillSymbol(name[136],136),
-            createFillSymbol(name[137],137),
-            createFillSymbol(name[138],138),
-            createFillSymbol(name[139],139),
-            createFillSymbol(name[140],140),
-            createFillSymbol(name[141],141),
-            createFillSymbol(name[142],142),
-            createFillSymbol(name[143],143),
-            createFillSymbol(name[144],144),
-            createFillSymbol(name[145],145),
-            createFillSymbol(name[146],146),
-            createFillSymbol(name[147],147),
-            createFillSymbol(name[148],148),
-            createFillSymbol(name[149],149),
-            createFillSymbol(name[150],150),
-            createFillSymbol(name[151],151),
-            createFillSymbol(name[152],152),
-            createFillSymbol(name[153],153),
-            createFillSymbol(name[154],154),
-            createFillSymbol(name[155],155),
-            createFillSymbol(name[156],156),
-            createFillSymbol(name[157],157),
-            createFillSymbol(name[158],158),
-            createFillSymbol(name[159],159),
-            createFillSymbol(name[160],160),
-            createFillSymbol(name[161],161),
-            createFillSymbol(name[162],162),
-            createFillSymbol(name[163],163),
-            createFillSymbol(name[164],164),
-            createFillSymbol(name[165],165),
-            createFillSymbol(name[166],166),
-            createFillSymbol(name[167],167),
-            createFillSymbol(name[168],168),
-            createFillSymbol(name[169],169),
-            createFillSymbol(name[170],170),
-            createFillSymbol(name[171],171),
-            createFillSymbol(name[172],172),
-            createFillSymbol(name[173],173),
-            createFillSymbol(name[174],174),
-            createFillSymbol(name[175],175),
-            createFillSymbol(name[176],176),
-            createFillSymbol(name[177],177),
-            createFillSymbol(name[178],178),
-            createFillSymbol(name[179],179),
-            createFillSymbol(name[180],180),
-            createFillSymbol(name[181],181),
-            createFillSymbol(name[182],182),
-            createFillSymbol(name[183],183),
-            createFillSymbol(name[184],184),
-            createFillSymbol(name[185],185),
-            createFillSymbol(name[186],186),
-            createFillSymbol(name[187],187),
-            createFillSymbol(name[188],188),
-            createFillSymbol(name[189],189),
-            createFillSymbol(name[190],190),
-            createFillSymbol(name[191],191),
-            createFillSymbol(name[192],192),
-            createFillSymbol(name[193],193),
-            createFillSymbol(name[194],194),
-            createFillSymbol(name[195],195),
-            createFillSymbol(name[196],196),
-            createFillSymbol(name[197],197),
-            createFillSymbol(name[198],198),
-            createFillSymbol(name[199],199),
-            createFillSymbol(name[200],200),
-            createFillSymbol(name[201],201),
-            createFillSymbol(name[202],202),
-            createFillSymbol(name[203],203),
-            createFillSymbol(name[204],204),
-            createFillSymbol(name[205],205),
-            createFillSymbol(name[206],206),
-            createFillSymbol(name[207],207),
-            createFillSymbol(name[208],208),
-            createFillSymbol(name[209],209),
-            createFillSymbol(name[210],210),
-            createFillSymbol(name[211],211),
-            createFillSymbol(name[212],212),
-            createFillSymbol(name[213],213),
-            createFillSymbol(name[214],214),
-            createFillSymbol(name[215],215),
-            createFillSymbol(name[216],216),
-            createFillSymbol(name[217],217),
-            createFillSymbol(name[218],218),
-            createFillSymbol(name[219],219),
-            createFillSymbol(name[220],220),
-            createFillSymbol(name[221],221),
-            createFillSymbol(name[222],222),
-            createFillSymbol(name[223],223),
-            createFillSymbol(name[224],224),
-            createFillSymbol(name[225],225),
-            createFillSymbol(name[226],226),
-            createFillSymbol(name[227],227),
-            createFillSymbol(name[228],228),
-            createFillSymbol(name[229],229),
-            createFillSymbol(name[230],230),
-            createFillSymbol(name[231],231),
-            createFillSymbol(name[232],232),
-            createFillSymbol(name[233],233),
-            createFillSymbol(name[234],234),
-            createFillSymbol(name[235],235),
-            createFillSymbol(name[236],236),
-            createFillSymbol(name[237],237),
-            createFillSymbol(name[238],238),
-            createFillSymbol(name[239],239),
-            createFillSymbol(name[240],240),
-            createFillSymbol(name[241],241),
-            createFillSymbol(name[242],242),
-            createFillSymbol(name[243],243),
-            createFillSymbol(name[244],244),
-            createFillSymbol(name[245],245),
-            createFillSymbol(name[246],246),
-            createFillSymbol(name[247],247),
-            createFillSymbol(name[248],248),
-            createFillSymbol(name[249],249),
+            createFillSymbol(ename[0],0),
+            createFillSymbol(ename[1],1),
+            createFillSymbol(ename[2],2),
+            createFillSymbol(ename[3],3),
+            createFillSymbol(ename[4],4),
+            createFillSymbol(ename[5],5),
+            createFillSymbol(ename[6],6),
+            createFillSymbol(ename[7],7),
+            createFillSymbol(ename[8],8),
+            createFillSymbol(ename[9],9),
+            createFillSymbol(ename[10],10),
+            createFillSymbol(ename[11],11),
+            createFillSymbol(ename[12],12),
+            createFillSymbol(ename[13],13),
+            createFillSymbol(ename[14],14),
+            createFillSymbol(ename[15],15),
+            createFillSymbol(ename[16],16),
+            createFillSymbol(ename[17],17),
+            createFillSymbol(ename[18],18),
+            createFillSymbol(ename[19],19),
+            createFillSymbol(ename[20],20),
+            createFillSymbol(ename[21],21),
+            createFillSymbol(ename[22],22),
+            createFillSymbol(ename[23],23),
+            createFillSymbol(ename[24],24),
+            createFillSymbol(ename[25],25),
+            createFillSymbol(ename[26],26),
+            createFillSymbol(ename[27],27),
+            createFillSymbol(ename[28],28),
+            createFillSymbol(ename[29],29),
+            createFillSymbol(ename[30],30),
+            createFillSymbol(ename[31],31),
+            createFillSymbol(ename[32],32),
+            createFillSymbol(ename[33],33),
+            createFillSymbol(ename[34],34),
+            createFillSymbol(ename[35],35),
+            createFillSymbol(ename[36],36),
+            createFillSymbol(ename[37],37),
+            createFillSymbol(ename[38],38),
+            createFillSymbol(ename[39],39),
+            createFillSymbol(ename[40],40),
+            createFillSymbol(ename[41],41),
+            createFillSymbol(ename[42],42),
+            createFillSymbol(ename[43],43),
+            createFillSymbol(ename[44],44),
+            createFillSymbol(ename[45],45),
+            createFillSymbol(ename[46],46),
+            createFillSymbol(ename[47],47),
+            createFillSymbol(ename[48],48),
+            createFillSymbol(ename[49],49),
+            createFillSymbol(ename[50],50),
+            createFillSymbol(ename[51],51),
+            createFillSymbol(ename[52],52),
+            createFillSymbol(ename[53],53),
+            createFillSymbol(ename[54],54),
+            createFillSymbol(ename[55],55),
+            createFillSymbol(ename[56],56),
+            createFillSymbol(ename[57],57),
+            createFillSymbol(ename[58],58),
+            createFillSymbol(ename[59],59),
+            createFillSymbol(ename[60],60),
+            createFillSymbol(ename[61],61),
+            createFillSymbol(ename[62],62),
+            createFillSymbol(ename[63],63),
+            createFillSymbol(ename[64],64),
+            createFillSymbol(ename[65],65),
+            createFillSymbol(ename[66],66),
+            createFillSymbol(ename[67],67),
+            createFillSymbol(ename[68],68),
+            createFillSymbol(ename[69],69),
+            createFillSymbol(ename[70],70),
+            createFillSymbol(ename[71],71),
+            createFillSymbol(ename[72],72),
+            createFillSymbol(ename[73],73),
+            createFillSymbol(ename[74],74),
+            createFillSymbol(ename[75],75),
+            createFillSymbol(ename[76],76),
+            createFillSymbol(ename[77],77),
+            createFillSymbol(ename[78],78),
+            createFillSymbol(ename[79],79),
+            createFillSymbol(ename[80],80),
+            createFillSymbol(ename[81],81),
+            createFillSymbol(ename[82],82),
+            createFillSymbol(ename[83],83),
+            createFillSymbol(ename[84],84),
+            createFillSymbol(ename[85],85),
+            createFillSymbol(ename[86],86),
+            createFillSymbol(ename[87],87),
+            createFillSymbol(ename[88],88),
+            createFillSymbol(ename[89],89),
+            createFillSymbol(ename[90],90),
+            createFillSymbol(ename[91],91),
+            createFillSymbol(ename[92],92),
+            createFillSymbol(ename[93],93),
+            createFillSymbol(ename[94],94),
+            createFillSymbol(ename[95],95),
+            createFillSymbol(ename[96],96),
+            createFillSymbol(ename[97],97),
+            createFillSymbol(ename[98],98),
+            createFillSymbol(ename[99],99),
+            createFillSymbol(ename[100],100),
+            createFillSymbol(ename[101],101),
+            createFillSymbol(ename[102],102),
+            createFillSymbol(ename[103],103),
+            createFillSymbol(ename[104],104),
+            createFillSymbol(ename[105],105),
+            createFillSymbol(ename[106],106),
+            createFillSymbol(ename[107],107),
+            createFillSymbol(ename[108],108),
+            createFillSymbol(ename[109],109),
+            createFillSymbol(ename[110],110),
+            createFillSymbol(ename[111],111),
+            createFillSymbol(ename[112],112),
+            createFillSymbol(ename[113],113),
+            createFillSymbol(ename[114],114),
+            createFillSymbol(ename[115],115),
+            createFillSymbol(ename[116],116),
+            createFillSymbol(ename[117],117),
+            createFillSymbol(ename[118],118),
+            createFillSymbol(ename[119],119),
+            createFillSymbol(ename[120],120),
+            createFillSymbol(ename[121],121),
+            createFillSymbol(ename[122],122),
+            createFillSymbol(ename[123],123),
+            createFillSymbol(ename[124],124),
+            createFillSymbol(ename[125],125),
+            createFillSymbol(ename[126],126),
+            createFillSymbol(ename[127],127),
+            createFillSymbol(ename[128],128),
+            createFillSymbol(ename[129],129),
+            createFillSymbol(ename[130],130),
+            createFillSymbol(ename[131],131),
+            createFillSymbol(ename[132],132),
+            createFillSymbol(ename[133],133),
+            createFillSymbol(ename[134],134),
+            createFillSymbol(ename[135],135),
+            createFillSymbol(ename[136],136),
+            createFillSymbol(ename[137],137),
+            createFillSymbol(ename[138],138),
+            createFillSymbol(ename[139],139),
+            createFillSymbol(ename[140],140),
+            createFillSymbol(ename[141],141),
+            createFillSymbol(ename[142],142),
+            createFillSymbol(ename[143],143),
+            createFillSymbol(ename[144],144),
+            createFillSymbol(ename[145],145),
+            createFillSymbol(ename[146],146),
+            createFillSymbol(ename[147],147),
+            createFillSymbol(ename[148],148),
+            createFillSymbol(ename[149],149),
+            createFillSymbol(ename[150],150),
+            createFillSymbol(ename[151],151),
+            createFillSymbol(ename[152],152),
+            createFillSymbol(ename[153],153),
+            createFillSymbol(ename[154],154),
+            createFillSymbol(ename[155],155),
+            createFillSymbol(ename[156],156),
+            createFillSymbol(ename[157],157),
+            createFillSymbol(ename[158],158),
+            createFillSymbol(ename[159],159),
+            createFillSymbol(ename[160],160),
+            createFillSymbol(ename[161],161),
+            createFillSymbol(ename[162],162),
+            createFillSymbol(ename[163],163),
+            createFillSymbol(ename[164],164),
+            createFillSymbol(ename[165],165),
+            createFillSymbol(ename[166],166),
+            createFillSymbol(ename[167],167),
+            createFillSymbol(ename[168],168),
+            createFillSymbol(ename[169],169),
+            createFillSymbol(ename[170],170),
+            createFillSymbol(ename[171],171),
+            createFillSymbol(ename[172],172),
+            createFillSymbol(ename[173],173),
+            createFillSymbol(ename[174],174),
+            createFillSymbol(ename[175],175),
+            createFillSymbol(ename[176],176),
+            createFillSymbol(ename[177],177),
+            createFillSymbol(ename[178],178),
+            createFillSymbol(ename[179],179),
+            createFillSymbol(ename[180],180),
+            createFillSymbol(ename[181],181),
+            createFillSymbol(ename[182],182),
+            createFillSymbol(ename[183],183),
+            createFillSymbol(ename[184],184),
+            createFillSymbol(ename[185],185),
+            createFillSymbol(ename[186],186),
+            createFillSymbol(ename[187],187),
+            createFillSymbol(ename[188],188),
+            createFillSymbol(ename[189],189),
+            createFillSymbol(ename[190],190),
+            createFillSymbol(ename[191],191),
+            createFillSymbol(ename[192],192),
+            createFillSymbol(ename[193],193),
+            createFillSymbol(ename[194],194),
+            createFillSymbol(ename[195],195),
+            createFillSymbol(ename[196],196),
+            createFillSymbol(ename[197],197),
+            createFillSymbol(ename[198],198),
+            createFillSymbol(ename[199],199),
+            createFillSymbol(ename[200],200),
+            createFillSymbol(ename[201],201),
+            createFillSymbol(ename[202],202),
+            createFillSymbol(ename[203],203),
+            createFillSymbol(ename[204],204),
+            createFillSymbol(ename[205],205),
           ]
         };
       }
@@ -406,16 +630,7 @@
                       const graphic = {
                           popupTemplate: {
                               //content: "Mouse over features to show details...",
-                              title: "世界{COUNTRY}",
-                              outFields: ["*"],
-                              displayType: "list",
-                              content:{type: "fields",
-                                  fieldInfos: [
-                                      {
-                                          fieldName: "ISO_CC",
-                                          label: "ISO_CC"
-                                      }]}
-
+                              title: "{COUNTRY}"
                           }
                       };
 
@@ -463,21 +678,29 @@
                               if (!promiseUtils.isAbortError(err)) {
                                   throw err;}
                           });
-                        selectName();
-                        function selectName(){Selecting=$("#feature-node").text();
-                        if(Selecting){//查询国家，更改饼图
-                            document.getElementById("CountryName").innerHTML=Selecting+"感染情况";}
-                            else{document . getElementById("CountryName").innerHTML="世界感染情况";}
 
-                        }
-                        if (game === 0) {
-                          setTimeout(selectName(),3000);
-                          if (confirm("你将从" + Selecting + "开始游戏")) {
-                            game = 1;
-                            infected[name.indexOf(Selecting)]++;
-                            main();
-                          }
-                        }
+                        function selectName(){Selecting=$("#feature-node").text();}
+                        selectName();
+                        if(Selecting){//查询国家，更改饼图
+                            document.getElementById("CountryName").innerHTML=Selecting+"感染情况";
+                        } else{document . getElementById("CountryName").innerHTML="世界感染情况";}
+
+                          setTimeout(function () {
+                              selectName();
+                              if(Selecting){//查询国家，更改饼图
+                                if (game === 0) {
+                                if (confirm("你将从" + Selecting + "开始游戏")) {
+                                  game = 1;
+                                  infected[ename.indexOf(Selecting)]++;
+                                  //main();
+                                }}
+                                document.getElementById("CountryName").innerHTML=Selecting+"感染情况";
+                              } else{document . getElementById("CountryName").innerHTML="世界感染情况";
+                              }
+                          }, 1000);
+
+
+
                         //confirm("hi "+Selecting);
                       });
                   });

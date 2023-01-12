@@ -1,58 +1,65 @@
 //这里是可爱的后端，应该算是后端吧
-
 	//变量定义
 	//国家属性225个，从数据库读进来,id就是索引。
-	name = new Array();
-	temperature = new Array();
-	wealthy = new Array();
-	density = new Array();
-	
+	var name = new Array();
+	var temperature = new Array();
+	var wealthy = new Array();
+	var density = new Array();
+
 	population = new Array();
 	infected = new Array();
 	dead = [];
-	infeSpeed = new Array();
-	mediSpeed = new Array();
-	dieSpeed = new Array();
-	downfall = new Array();
-	
+var infeSpeed = new Array();
+var mediSpeed = new Array();
+var dieSpeed = new Array();
+var downfall = new Array();
+
 	//邻域国家可能要用空间查询才行，看看前端的地图是ArcGIS的有无接口可以用
-	
-	tradeFriend = new Array();//贸易密切国。看看思敏有没有发挥她的聪明才智。没有的话，可以每个国家都只有一个贸易密切国，就是一个整型的数据，就是id，也就是索引。重点关注岛国就好。要复杂一点的话，看看能不能嵌套数组。
-	
+
+var tradeFriend = new Array();//贸易密切国。看看思敏有没有发挥她的聪明才智。没有的话，可以每个国家都只有一个贸易密切国，就是一个整型的数据，就是id，也就是索引。重点关注岛国就好。要复杂一点的话，看看能不能嵌套数组。
+
 	//病毒属性,初始值都是0
-	antihot = 0;
-	antiCold = 0;
-	antiMedi = 0;
-	serverity = 0;
-	lethality = 0;
-	
+var antihot = 0;
+var antiCold = 0;
+var antiMedi = 0;
+var serverity = 0;
+var lethality = 0;
+
 	//世界变量
-	mediPercent=0;
-	allMediSpeed=0;
-	mediStart=false;
-	allPopu=800000000;//要看数据库里是多少
-	allInfec=0;
-	allDead=0;
-	allHealth=0;
-	allDownfall=0;
-	allHealth=0;
-	
+var mediPercent=0;
+var allMediSpeed=0;
+var mediStart=false;
+	var allPopu=800000000;//要看数据库里是多少
+var allInfec=0;
+var allDead=0;
+var allHealth=0;
+var allDownfall=0;
+var allHealth=0;
+
 	//游戏变量
-	point=0;
+var point=0;
 	var game=0;
-	
+
 	//时间显示
-	accumulate=0;	//累积时间
-	year=2000;		//初始时间
-	month=1;
-	day=1;
+var accumulate=0;	//累积时间
+var year=2000;		//初始时间
+var month=1;
+var day=1;
 
 
 
 
 //前端：选取初始国家，将该国家的infected[i]++，然后让game=1
-
-
+$.getJSON('data/Data.json', function (data1) {
+	console.log("json文件数据", data1);
+	for(const i=0;i<205;i++){
+		name[i]=data1.data[i].ename;
+		infected[i]=data1.data[i].infected;
+		population[i]=data1.data[i].population
+		dead[i]=0;
+		console.log("na"+i, name[i]);
+	}
+});
 
 
 //预定义main需要用的函数
@@ -160,7 +167,7 @@ function main(){//main每时间单元循环步骤
 	while(game==1){
 		timePlus;
 		point+=0.5;
-		
+
 		for(i = 0; i < name.length; i++){
 			//感染了并且没死光
 			if(infected[i]>0){
@@ -211,7 +218,7 @@ function main(){//main每时间单元循环步骤
 				}
 			}
 			//死光了，所以也没有感染者了。因为都死了。
-			else{ 
+			else{
 				mediSpeed[i]=0;
 			}
 			//完成研发！
@@ -222,18 +229,18 @@ function main(){//main每时间单元循环步骤
 					infected[i]=0;
 			}
 		}//for每个国家结束
-			
-			
+
+
 		//求和看全世界的参数
 		//不能放在for每个国家里，看看能不能放在更新函数里
 		//不行，要判断是否大于国家人数有点麻烦，而且每轮就要更新很多次，可能显示会有问题。这里只更新一次
 		//这里饼图不能刷新啊啊啊啊，一刷新就又看着他变大一次。
 		//如果饼图可以控制刷新频率就可以这样。如果不行的话就……很麻烦。每更新一个国家就要更新一次他
-		
-		
+
+
 		//更新世界统计数据：allInfec、allDead、allMediSpeed、allHealth
 		refreshWorld;
-		
+
 		//判断开始研发。这个最好能写进触发器。
 		if(allInfec>=50000){
 			mediStart=true;
@@ -249,8 +256,8 @@ function main(){//main每时间单元循环步骤
 			game=2;//玩家胜利
 		if(allInfec==0&&allPopu-allDead!= 0)
 			game=3;//人类胜利
-		
-		
+
+
 		//在这里放显示函数，或者get的函数，每一轮结束的时候刷新一次
 	}
 }
