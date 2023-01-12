@@ -7,7 +7,7 @@
   <meta charset="utf-8">
 </head>
 <body style="height: 100%; margin: 0">
-  <div id="container" style="height: 100%"></div>
+  <div id="container" style="height: 90%"></div>
 
   
   <script src="https://fastly.jsdelivr.net/npm/echarts@5.4.1/dist/echarts.min.js" type="text/javascript"></script>
@@ -29,47 +29,130 @@
   <script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.1/dist/extension/bmap.min.js"></script>
   -->
 
-  <script type="text/javascript">
-    var dom = document.getElementById('container');
-    var myChart = echarts.init(dom, null, {
-      renderer: 'canvas',
-      useDirtyRect: false
-    });
-    var app = {};
-    
-    var option;
+  <script>
+    window.onload = () => {
+      // pie data
+      var allPopu=20000;//要看数据库里是多少
+      var allInfec = 0;
+      var allDead = 0;
+      var allHealth = 0;
+      allHealth = allPopu - allDead - allInfec;
 
-    option = {
-    tooltip: {
-        trigger: 'item'
-    },
-      color:["#8d8d8d","#c20000","#09ab00"],//红绿蓝
-      series: [
-    {
-      name: 'Access From',
-      type: 'pie',
-      data: [
-        { value: 1048, name: '死亡'},
-        { value: 735, name: '感染' },
-        { value: 580, name: '健康' },
+      var dom = document.getElementById('container');
+      var myChart = echarts.init(dom, null, {
+        renderer: 'canvas',
+        useDirtyRect: false
+      });
+      var app = {};
 
-      ],
-      emphasis: {
-        itemStyle: {
-          shadowBlur: 10,
-          shadowOffsetX: 0,
-          shadowColor: 'rgba(255, 255, 255, 0.5)'
-        }
+      var option;
+
+      option = {
+        tooltip: {
+          trigger: 'item',
+          position: function (point, params, dom, rect, size) {
+            //  size为当前窗口大小
+            if ((size.viewSize[0] / 2) >= point[0]) {
+              //其中point为当前鼠标的位置
+              return [point[0]-10 , '10%'];
+            } else {
+              //其中point为当前鼠标的位置
+              return [point[0] - 150, '10%'];
+            }
+          },
+        },
+        grid:{
+          top: '-10%',  // 组件离容器上侧的距离,百分比字符串或整型数字
+          left: '0%',    // 组件离容器左侧的距离,百分比字符串或整型数字
+          //containLabel: true
+        },
+        color:["#b4b4b4","#c20000","#09ab00"],//红绿蓝
+
+        series: [
+          {
+            name: 'World',
+            type: 'pie',
+            radius: '60%',
+            data: [
+              { value: allDead, name: '死亡' },
+              { value: allInfec, name: '感染' },
+              { value: allHealth, name: '健康' }
+            ],
+            emphasis: {
+              itemStyle: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)'
+              }
+            }
+          }
+        ]
+      };
+
+      function dataInit(data1, data2, data3) {
+        option.series[0].data[0].value = data2
+        option.series[0].data[1].value = data1
+        option.series[0].data[2].value = data3
+        myChart.setOption(option);
       }
-    }
-  ]
-};
+      setInterval(() => {
+        /**
+         * @param 模拟数据请求
+         */
+/*        var xhr="";
+        function createXHR(){
+          if(new window.XMLHttpRequest){
+            //如果浏览器支持对象XMLHttpRequest
+            xhr=new XMLHttpRequest();
+          }else{
+            //低版本IE使用ActiveXObject
+            xhr=new ActiveXObject("Microsoft.XMLH");
+          }
+        }
+        createXHR();
 
-    if (option && typeof option === 'object') {
-      myChart.setOption(option);
-    }
+/*        //使用XMLHttpRequest对象发送请求
+       xhr.open("get","../../data.json",false);
+        xhr.send(null);
+        var personStr=xhr.responseText;//返回的数据都是字符串，不具备对象方法
+        var res = JSON.parse(personStr);
 
-    window.addEventListener('resize', myChart.resize);
+        /**
+         * @mess 下三行为数据处理 => 在此调用数据库+接口获取data数据，再更改值
+         * @eg: allInfec = res.data.allInfec
+         * @data { allInfec: 8640（感染人数）, allDead: 4000(死亡人数), allHealth: allPopu - allDead - allInfec }
+         */
+/*        allPopu = res.data.allPopu
+        allInfec = res.data.allInfec
+        allDead = res.data.allDead
+        allHealth = allPopu - allDead - allInfec
+*/
+        function refreshPie() {
+          if(self.parent.Selecting){
+            option.series[0].name=self.parent.Selecting;
+          allPopu = self.parent.population[self.parent.ename.indexOf(self.parent.Selecting)];
+          allInfec = self.parent.infected[self.parent.ename.indexOf(self.parent.Selecting)];
+          allDead = self.parent.dead[self.parent.ename.indexOf(self.parent.Selecting)];
+          }else{
+            option.series[0].name="World"
+            allPopu = self.parent.allPopu;
+            allInfec = self.parent.allInfec;
+            allDead = self.parent.allInfec;
+          }
+          allHealth = allPopu - allDead - allInfec;
+        }
+        refreshPie();
+        // 三个参数
+        dataInit(allInfec, allDead, allHealth);
+        main()
+      }, 3000);
+
+      if (option && typeof option === 'object') {
+        myChart.setOption(option);
+      }
+
+      window.addEventListener('resize', myChart.resize);
+    }
   </script>
 </body>
 </html>

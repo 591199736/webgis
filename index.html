@@ -32,6 +32,7 @@
   <script src="js/jquery.js" type="text/javascript"></script>
   <!--script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.1/dist/echarts.min.js"></script>不太理解为什么引入这个之后会出错-->
   <script>
+    var Selecting;
     //这里是可爱的后端，应该算是后端吧
     //变量定义
     //国家属性225个，从数据库读进来,id就是索引。
@@ -607,7 +608,6 @@
       map.add(layer);
       // layer.refreshInterval = 0.1;
 
-      var Selecting="test";
       //document.getElementsByClassName("top-left-title").innerHTML=Selecting;
       // Update at 30fps
       setInterval(() => {
