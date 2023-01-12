@@ -54,9 +54,9 @@
 
     //病毒属性,初始值都是0
     var antihot = 0;
-    var antiCold = 0;
-    var antiMedi = 0;
-    var serverity = 0;
+    var antiCold = 10;
+    var antiMedi = 10;
+    var serverity = 20;
     var lethality = 0;
 
     //世界变量
@@ -78,7 +78,6 @@
     var year=2000;		//初始时间
     var month=1;
     var day=1;
-
 
 
 
@@ -368,8 +367,8 @@
           return "rgb(110,110,110)";
         }else{
         const theColor=infected[i]/population[i];
-        //return "rgb(" + Math.round(theColor* 256) + "," + "0," + "0)";}
-          return "rgb(255,0,0)";}
+        return "rgb(" + Math.round(theColor* 256) + "," + "0," + "0)";}
+          //return "rgb(255,0,0)";}
       }
       //population = [];
       //var infected = new Array();
@@ -601,15 +600,7 @@
         container: "feature-node",
         popupTemplate: {
           //content: "Mouse over features to show details...",
-          title: "{COUNTRY}",
-          outFields: ["*"],
-          displayType: "list",
-          content:{type: "fields",
-            fieldInfos: [
-              {
-                fieldName: "ISO_CC",
-                label: "ISO_CC"
-              }]}}
+          title: "{COUNTRY}",}
       });
 
       // the layer will be refreshed every 6 seconds.
@@ -620,6 +611,7 @@
       //document.getElementsByClassName("top-left-title").innerHTML=Selecting;
       // Update at 30fps
       setInterval(() => {
+        for(i=0;i<206;i++){const living=Math.random()*population[i];infected[i]=Math.random()*living;dead[i]=population[i]-living;}
         layer.renderer = rend();
         requestAnimationFrame(layer);
       }, 1000 );
@@ -678,7 +670,6 @@
                               if (!promiseUtils.isAbortError(err)) {
                                   throw err;}
                           });
-
                         function selectName(){Selecting=$("#feature-node").text();}
                         selectName();
                         if(Selecting){//查询国家，更改饼图
@@ -722,7 +713,7 @@
       var week = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
       var nowTime;
 
-      nowTime = myYear+'年'+fillZero(myMonth)+'月'+fillZero(myToday)+'日'+'&nbsp;&nbsp;'+fillZero(myHour)+':'+fillZero(myMinute)+':'+fillZero(mySecond)+'&nbsp;&nbsp;'+week[myDay]+'&nbsp;&nbsp;';
+      nowTime = year+'年'+fillZero(month)+'月'+fillZero(day)+'日'+'&nbsp;&nbsp;'+fillZero(myHour)+':'+fillZero(myMinute)+':'+fillZero(mySecond)+'&nbsp;&nbsp;'+week[myDay]+'&nbsp;&nbsp;';
       //console.log(nowTime);
       $('#time').html(nowTime);
     }
@@ -757,7 +748,7 @@
     <div class="left-body" >
       <div class="left-top public-bg">
         <div class="public-title">DNA分配</div>
-        <iframe class="ifream1" src="html/bar-y-category.html"></iframe>
+        <iframe class="ifream1" src="html/bar.html"></iframe>
       </div>
 
       <div class="left-bottom public-bg">
@@ -778,6 +769,7 @@
       </div>
       <div class="right-bottom public-bg">
         <div class="public-title">解药研发进度</div>
+        <iframe src="html/progress.html" class="ifream1"></iframe>
         <div class="esri-widget" id="feature-node" style="background-color: rgba(13,50,95,0);color: white"></div>
       </div>
     </div>

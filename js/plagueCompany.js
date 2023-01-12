@@ -52,7 +52,7 @@ var day=1;
 //前端：选取初始国家，将该国家的infected[i]++，然后让game=1
 $.getJSON('data/Data.json', function (data1) {
 	console.log("json文件数据", data1);
-	for(const i=0;i<205;i++){
+	for(i=0;i<205;i++){
 		name[i]=data1.data[i].ename;
 		infected[i]=data1.data[i].infected;
 		population[i]=data1.data[i].population

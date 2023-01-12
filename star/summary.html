@@ -1,0 +1,169 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>结算界面</title>
+    <link rel="stylesheet" type="text/css" href="css/summary.css">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+
+    <script type="text/javascript"
+            src="https://cdn.jsdelivr.net/gh/Fuukei/Public_Repository@latest/static/js/sakura-less.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Roboto:100,400,300,500,700' rel='stylesheet' type='text/css'>
+
+    <div class="conteneur" align="center">
+        <div class="css3_div">
+            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/173024/logo_css3.png" />
+            <div class="txtcss">
+                <font style="font-weight:300;font-size: 45px;">山川异域，风月同天</font> <font style="font-weight:400;font-size: 45px;"></font>
+                <br />
+                <font style="font-weight:300; font-size: 18px;">Lands apart, sky shared.</font>
+            </div>
+        </div>
+        <div class="html5_div">
+            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/173024/logo_html5.png" />
+            <div class="txthtml">
+                <font style="font-weight:300;font-size: 45px;"></font> <font style="font-weight:400;font-size: 45px;">战场重现</font>
+                <br />
+                <font style="font-weight:300; font-size: 18px;">achievement review</font>
+            </div>
+        </div>
+        <div class="trycss">
+            <font style="font-weight:300;font-size: 30px;"></font> <font style="font-weight:400;font-size: 40px;">本次模拟正式结束，</font>
+            <br />
+            <font style="font-weight:300; font-size: 18px;"> Tomorrow is another day.</font>
+        </div>
+        <div class="shareit">
+            <font style="font-weight:300;font-size: 45px;"> </font> <font style="font-weight:400;font-size: 40px;">你可听见人们的高歌？</font>
+            <br />
+            <font style="font-weight:300; font-size: 18px;">Do you hear the people sing?</font>
+        </div>
+    </div>
+    <div class="html5_div" id="box">
+        <div class="gradient-border" id="achievement" style="text-align:center">
+            <div style="text-align:center" class="div5">
+                <font style="font-weight:400;font-size: 40px;">入侵 · 成就</font>
+            </div>
+        </div>
+        <div class="gradient-border" id="yourdata">
+            <div style="text-align:center" class="div5">
+                <font style="font-weight:400;font-size: 40px;">数据 · 回顾</font>
+            </div>
+            <div style="text-align:center" class="div2">
+                <font style="font-weight:400;font-size: 30px;">总计传播天数</font><p id="one"></p>
+            </div>
+            <div style="text-align:center" class="div2">
+                <font style="font-weight:400;font-size: 30px;">总计感染人数</font><p id="two"></p><font style="font-weight:400;font-size: 30px;"></font>
+            </div>
+            <div style="text-align:center" class="div2">
+                <font style="font-weight:400;font-size: 30px;">总计死亡人数<p id="three"></p>
+            </div>
+        </div>
+       
+    </div>
+
+        <script>
+            //假设每隔5秒发送一次请求
+            var a = 0;
+            var achieve = 5;
+            window.onload = function () {
+                getApi();
+            }
+            function getApi() {
+                //设置时间 5-秒  1000-毫秒  这里设置你自己想要的时间
+                setTimeout(getApi, 4 * 1000);
+                window.a = a + 1;
+                console.log(window.a);
+                if (a == 4) {
+                    // 根据成就等级插入div
+                    if (achieve >= 1) {
+                        var div = document.getElementById('achievement');
+                        // 创建li元素
+                        var li = document.createElement('div')
+
+                        li.setAttribute("class", "div1");
+                        // 向li中添加文本内容
+                        li.innerHTML = '⭐️ 强势入侵 ⭐️'
+                        // 向指定div中插入li
+                        div.appendChild(li);
+                    }
+                    if (achieve >= 2) {
+                        var div = document.getElementById('achievement');
+                        // 创建li元素
+                        var li = document.createElement('div')
+
+                        li.setAttribute("class", "div1");
+                        // 向li中添加文本内容
+                        li.innerHTML = '⭐️ 黑云压城 ⭐️'
+                        // 向指定div中插入li
+                        div.appendChild(li);
+                    }
+                    if (achieve >= 3) {
+                        var div = document.getElementById('achievement');
+                        // 创建li元素
+                        var li = document.createElement('div')
+
+                        li.setAttribute("class", "div1");
+                        // 向li中添加文本内容
+                        li.innerHTML = '⭐️ 最后高地 ⭐️'
+                        // 向指定div中插入li
+                        div.appendChild(li);
+                    }
+                    if (achieve >= 4) {
+                        var div = document.getElementById('achievement');
+                        // 创建li元素
+                        var li = document.createElement('div')
+
+                        li.setAttribute("class", "div1");
+                        // 向li中添加文本内容
+                        li.innerHTML = '⭐️ 鬼火燎原 ⭐️'
+                        // 向指定div中插入li
+                        div.appendChild(li);
+                    }
+                    if (achieve >= 5) {
+                        var div = document.getElementById('achievement');
+                        // 创建li元素
+                        var li = document.createElement('div')
+
+                        li.setAttribute("class", "div1");
+                        // 向li中添加文本内容
+                        li.innerHTML = '⭐️ 异世主宰 ⭐️'
+                        // 向指定div中插入li
+                        div.appendChild(li);
+                    }
+                    var div = document.getElementById('box');
+                    div.style.display = "flex";
+                }
+            }
+
+
+            // 统计数据的滚动显示：targetNum为最终数值，delay为效果持续时间
+            function numscroll(elementID, targetNum, delay) {
+                let a = document.getElementById(elementID);
+                let timmerA = setInterval(function () {
+                    if (a.innerText != targetNum) {
+                        let num = Number(a.innerText);
+                        num += Number((targetNum / delay / 10).toFixed(0)); //若有小数需求可自行修改此行
+                        if (num < targetNum) {        //针对有余数除不尽
+                            a.innerText = num;
+                        } else {
+                            a.innerText = targetNum;
+                        }
+                    } else {
+                        clearInterval(timmerA)
+                    }
+                }, 100)
+            }
+            // 测试数据 到时候换成我们的
+            numscroll('one', 98501, 50);
+            numscroll('two', 2000, 50);
+            numscroll('three', 15000, 50);
+        </script>
+
+</body>
+</html>

@@ -1,0 +1,190 @@
+
+body{
+    margin:0;
+    padding: 0;
+}
+*{
+    box-sizing: border-box;
+    user-select: none;
+}
+
+ul,
+li{
+    width: 100%;
+    margin-left: 5%;
+    /* margin-right: 5%; */
+    padding: 0;
+}
+
+main{
+    display: flex;
+    align-items: center;
+    height: 80vh;
+    justify-content: center;
+    /* background-color: #1e272e; */
+
+}
+
+ul{
+    width: 500px;
+   
+}
+
+ul li{
+    list-style: none;
+    color: #d2dae2;
+    font-size: 14px;
+    margin: 20px 0;
+    position:relative;
+}
+
+/* 减号 */
+ul.jianhao li{
+    left:8px;
+}
+ul.jianhao li::before{
+    content: "-";
+    display: block;
+    height: 10px;
+    width: 100%;
+    position: absolute;
+    bottom: -4px;
+    left: 9px;
+    font-size: 25px;
+    left:3px;
+}
+ul.jianhao li:hover::before{
+    color: #0fbcf9;
+}
+
+/* 加号 */
+ul.jiahao li::before{
+    content: "+";
+    display: block;
+    height: 16.5px;
+    width: 100%;
+    position: absolute;
+    bottom: -15px;
+    font-size: 20px;
+    right:5px;
+}
+ul.jiahao li.span{
+    bottom: -20px;
+}
+ul.jiahao li:hover{
+    color: #0fbcf9;
+}
+
+
+/* 中间的属性条 */
+ul.bar li::before,
+ul.bar li::after {
+    content: "";
+    display: block;
+    height: 12px;
+    width: 100%;
+    background-color: #1f4a59;
+    position: absolute;
+    bottom: -20px;
+    border-radius: 6px;
+}
+
+ul.bar li::before{
+    box-shadow: 0 0 6px rgba(75,207,250,0.2);
+}
+
+ul.bar li::after{
+    background-image:linear-gradient(90deg,#0fbcf9,#34e7e4)
+}
+
+ul.bar li::after{
+    animation-duration: 1.2s;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-in-out;
+}
+
+.kangre::after{
+    animation-name: kangre;
+}
+
+.naihan::after{
+    animation-name: naihan;
+}
+
+.kangyao::after{
+    animation-name: kangyao;
+}
+
+.yanzhong::after{
+    animation-name: yanzhong;
+}
+
+.zhisi::after{
+    animation-name: zhisi;
+}
+
+@keyframes kangre {
+    from{
+        width:0;
+    }
+    to{
+        width:90%;
+    }
+}
+
+@keyframes naihan {
+    from{
+        width:0;
+    }
+    to{
+        width:70%;
+    }
+}
+
+@keyframes kangyao {
+    from{
+        width:0;
+    }
+    to{
+        width:40%;
+    }
+}
+
+@keyframes yanzhong {
+    from{
+        width:0;
+    }
+    to{
+        width:60%;
+    }
+}
+
+@keyframes zhisi {
+    from{
+        width:0;
+    }
+    to{
+        width:40%;
+    }
+}
+
+/* 前面的小图标 */
+/* CDN 服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份。 */
+@font-face {
+    font-family: 'iconfont';  /* Project id 3830076 */
+    src: url('http://at.alicdn.com/t/c/font_3830076_6ta5p7gnxru.woff2?t=1671282678235') format('woff2'),
+         url('http://at.alicdn.com/t/c/font_3830076_6ta5p7gnxru.woff?t=1671282678235') format('woff'),
+         url('http://at.alicdn.com/t/c/font_3830076_6ta5p7gnxru.ttf?t=1671282678235') format('truetype');
+  }
+
+.iconfont {
+    font-family: "iconfont" !important;
+    font-size: 16px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.total {
+   text-align: center;
+}

@@ -18,16 +18,18 @@
     let infected=self.parent.infected;
     let healthy=[];
     for(i=0;i<206;i++){healthy[i]=population[i]-dead[i]-infected[i];}
+    //百分比
+    function Normal() {
+        for(i=0;i<206;i++){
+            healthy[i]=healthy[i]/population[i];
+            dead[i]=dead[i]/population[i];
+            infected[i]=infected[i]/population[i];
+        }
+    }
+    //
     var myChart = echarts.init(document.getElementById('main'),'dark');
     var option;
-    var data=[];
-    var data1=[];
-    var data2=[];
-    for(let i=0;i<11;++i){
-        data.push(Math.round(Math.random()*100));
-        data1.push(Math.round(Math.random()*200));
-        data2.push(Math.round(Math.random()*200));
-    }
+
     option ={
         color:["#8d8d8d","#c20000","#09ab00"],//红绿蓝
         tooltip: {
@@ -44,15 +46,30 @@
                         //其中point为当前鼠标的位置
                         return [point[0] - 200, '10%'];
                     }
-            }
+            },
+            formatter:function (params) {
+                var relVal = params[0].name;
+                for (var i = 0, l = params.length; i < l; i++) {
+                    console.log('tooltip数据值',params[i].value)
+                    //遍历出来的值一般是字符串，需要转换成数字，再进项tiFixed四舍五入
+                    relVal += '<br/>' + params[i].marker + params[i].seriesName + ' : ' + Number(params[i].value).toFixed(2) + '%'
+                }
+                return relVal;
+            },
 
-
+        },
+        grid:{
+            top: '10%',  // 组件离容器上侧的距离,百分比字符串或整型数字
+            left: '5%',    // 组件离容器左侧的距离,百分比字符串或整型数字
+            right: '5%',
+            bottom: '3%',
+            containLabel: true
         },
         xAxis:{
             axisLabel:
                 {
                     show: true,
-                    interval: 0,//使x轴上的文字显示完全,
+                    //interval: 0,//使x轴上的文字显示完全,
                 },
             max:'dataMax', //表示用数据的最大值作为X轴最大值，视觉效果更好
         },
@@ -60,10 +77,13 @@
         yAxis:{
             type:'category',
             data:name,
-
+            axisLabel:
+                {
+                    show: false,
+                },
             animationDuration:300, //表示第一次柱条排序动画的时长为300
             animationDurationUpdate:300, //表示第一次后 柱条排序动画的时长为300
-            max:20 //只显示最大的9条 ，不设置则显示所有柱条
+            //max:20 //只显示最大的9条 ，不设置则显示所有柱条
         },
         series:[
             {
@@ -92,6 +112,7 @@
                     position:'insideRight',
                     valueAnimation:true //如果想要实时改变标签，需要将 series.label.valueAnimation 设为 true ??有待学习不明白
                 },
+                //barWidth: 3,//柱图宽度
                 animationDuration:300, //表示第一次柱条排序动画的时长为300
                 animationDurationUpdate:300, //表示第一次后 柱条排序动画的时长为300
             },{
@@ -129,6 +150,7 @@
     }
 
     setTimeout(function(){
+        Normal();
         run();
     },0);
 
@@ -137,7 +159,10 @@
         dead=self.parent.dead;
         population=self.parent.population;
         infected=self.parent.infected;
-        for(i=0;i<206;i++){healthy[i]=population[i]-dead[i]-infected[i];}
+        for(i=0;i<206;i++){
+            healthy[i]=population[i]-dead[i]-infected[i];
+        }
+        Normal();
         run();
     }, 3000);
 

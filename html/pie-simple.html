@@ -40,32 +40,25 @@
     var option;
 
     option = {
-  title: {
-    text: 'Referer of a Website',
-    subtext: 'Fake Data',
-    left: 'center'
-  },
-  tooltip: {
-    trigger: 'item'
-  },
-
+    tooltip: {
+        trigger: 'item'
+    },
+      color:["#8d8d8d","#c20000","#09ab00"],//红绿蓝
       series: [
     {
       name: 'Access From',
       type: 'pie',
-      radius: '50%',
       data: [
-        { value: 1048, name: 'Search Engine' },
-        { value: 735, name: 'Direct' },
-        { value: 580, name: 'Email' },
-        { value: 484, name: 'Union Ads' },
-        { value: 300, name: 'Video Ads' }
+        { value: 1048, name: '死亡'},
+        { value: 735, name: '感染' },
+        { value: 580, name: '健康' },
+
       ],
       emphasis: {
         itemStyle: {
           shadowBlur: 10,
           shadowOffsetX: 0,
-          shadowColor: 'rgba(0, 0, 0, 0.5)'
+          shadowColor: 'rgba(255, 255, 255, 0.5)'
         }
       }
     }

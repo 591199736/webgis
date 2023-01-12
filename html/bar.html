@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Static Template</title>
+  <link rel="stylesheet" type="text/css" href="./access/style.css" />
+  <script type="text/javascript" src="./access/vue.js"></script>
+  <!-- 引入样式 -->
+  <link rel="stylesheet" href="access/index.css">
+  <!-- 引入组件库 -->
+  <script src="access/index.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      color: white;
+    }
+    .flex {
+      display: flex;
+      /* width: 500px; */
+      align-items: center;
+
+    }
+
+    .progress {
+      width: 100%;
+      height: 15px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      position: relative;
+      border-radius: 35px;
+      overflow: hidden;
+    }
+
+    .current {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 50px;
+      background-color: pink;
+      height: 100%;
+    }
+    .el-message-box__wrapper {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      text-align: center;
+      width: 100%;
+      height: 100%;
+    }
+    .el-message-box {
+      beckground-color: rgba(0,0,0,0.7);
+      display: inline-block;
+      width: 60%;
+      padding-bottom: 10px;
+      vertical-align: middle;
+      background-color: #FFF;
+      border-radius: 4px;
+      border: 1px solid #EBEEF5;
+      font-size: 18px;
+      box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
+      text-align: left;
+      overflow: hidden;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+    }
+    .el-message-box__header {
+      background-color: rgba(0,0,0,0.7);
+    }
+    .el-message-box__content {
+      background-color: rgba(0,0,0,0.7);
+    }
+    .el-message-box__btns {
+      background-color: rgba(0,0,0,0.7);
+      color:black;
+    }
+    .el-button--small {
+      background-color: #606266;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <main>
+
+
+      <ul class="jianhao" style="width: 8%;margin-top:-5px">
+        <li :style="customColors[0].leftDisabled?'cursor:not-allowed;':''" @click="decrease(0)"><span
+            class="iconfont">&#xe66c</span>
+        </li>
+        <li :style="customColors[1].leftDisabled?'cursor:not-allowed;':''" @click="decrease(1)"><span
+            class="iconfont">&#xe60f</span>
+        </li>
+        <li :style="customColors[2].leftDisabled?'cursor:not-allowed;':''" @click="decrease(2)"><span
+            class="iconfont">&#xe600</span>
+        </li>
+        <li :style="customColors[3].leftDisabled?'cursor:not-allowed;':''" @click="decrease(3)"><span
+            class="iconfont">&#xe632</span>
+        </li>
+        <li :style="customColors[4].leftDisabled?'cursor:not-allowed;':''" @click="decrease(4)"><span
+            class="iconfont">&#xe610</span>
+        </li>
+
+        <!-- <li v-for="(item,index) in customColors" @click="decrease(index)"><span class="iconfont">{{item.hotColor}}</span></li> -->
+
+      </ul>
+      <ul class="bar" style="width: 100%">
+        <div v-for="(item,index) in customColors">
+
+          <span class="kangre">{{item.text}}</span>
+          <div class="flex">
+
+
+            <div class="progress">
+              <!-- <div class="current" :style="'width:'+index<=2?item.percentage*5+'px;background:'+item.color:item.percentage*2+'px;background:'+item.color"></div> -->
+              <div class="current" 
+                :style="index<=2?'width:'+(item.percentage*5)+'%;background:'+item.color:'width:'+(item.percentage*2)+'%;background:'+item.color">
+              </div>
+            </div>
+
+            <!-- <div> <el-progress style="width: 500px;" :percentage="item.percentage" :color="item.color" :show-text="false"></el-progress></div>
+          <span>{{index<=2?item.percentage*5:item.percentage*2}}</span>
+          </div> -->
+            <span style="color:rgb(210,218,226)">{{index<=2?item.percentage:item.percentage}}</span>
+          </div>
+        </div>
+      </ul>
+
+      <!-- cursor:not-allowed; -->
+      <ul class="jiahao" style="width: 8%;margin-top:-5px">
+        <li v-for="(item,index) in customColors" @click="increase(index)" class="jiakangre"
+          :style="item.rightDisabled?'cursor:not-allowed;':''">
+          <p>&nbsp</p>
+        </li>
+        <!-- <li @click="increase(1)">
+          <p>&nbsp</p>
+        </li>
+        <li @click="increase(2)">
+          <p>&nbsp</p>
+        </li>
+        <li @click="increase(3)">
+          <p>&nbsp</p>
+        </li>
+        <li @click="increase(4)">
+          <p>&nbsp</p>
+        </li> -->
+      </ul>
+
+    </main>
+    <div class="total">
+      <span>剩余点数：{{ availableCount | rounding }}</span>
+
+    </div>
+
+  </div>
+</body>
+
+
+<script>
+
+  //病毒属性,初始值都是0
+  var thevue=new Vue({
+    el: '#app',
+    created() {
+      localStorage.setItem("bar", JSON.stringify(this.customColors))
+    },
+    data() {
+      return {
+        availableCount: 50,
+        //availableCount: self.parent.point,
+        percentage: 20,
+        customColor: '#409eff',
+        customColors: [
+
+          // 抗热性
+          { hotColor: "&#xe66c", color: '#f56c6c', percentage: self.parent.antihot, text: "抗热性", leftDisabled: false, rightDisabled: false },
+          // 耐寒性
+          { hotColor: "&#xe60f", color: '#e6a23c', percentage: self.parent.antiCold, text: "耐寒性", leftDisabled: false, rightDisabled: false },
+          // 抗药性
+          { hotColor: "&#xe600", color: '#5cb87a', percentage: self.parent.antiMedi , text: "抗药性", leftDisabled: false, rightDisabled: false },
+          // 严重性
+          { hotColor: "&#xe632", color: '#1989fa', percentage: self.parent.serverity , text: "严重性", leftDisabled: false, rightDisabled: false },
+          // 致死性
+          { hotColor: "&#xe610", color: '#6f7ad3', percentage: self.parent.lethality, text: "致死性", leftDisabled: false, rightDisabled: false }
+        ]
+      }
+    },
+    methods: {
+
+      //新增
+      increase(i) {
+        // debugger
+        let item = this.customColors[i]
+        if (this.availableCount - 1 < 0) {
+          item.rightDisabled = true
+          item.leftDisabled = false
+          this.$set(this.customColors, i, item)
+          return false
+        } else {
+          this.availableCount -= 1
+          item.rightDisabled = false
+          item.leftDisabled = false
+          this.$set(this.customColors, i, item)
+
+        }
+        let flag = false
+
+        //符合条件 新增
+        if (this.customColors[i].percentage != 20 && this.availableCount >= 0 && i <= 2) {
+          flag = true
+
+        } else
+          if (this.customColors[i].percentage != 50 && this.availableCount >= 0 && i >= 3) {
+            flag = true
+          } else {
+            item.rightDisabled = true
+            this.$set(this.customColors, i, item)
+            return false
+          }
+        if (flag) {
+          //点击一次+1
+          var val = item.percentage
+          val = this.add(val, 1)
+          if (val > 100) {
+            val = 100;
+          }
+          item.percentage = val
+          this.$set(this.customColors, i, item)
+
+          localStorage.setItem("bar", JSON.stringify(this.customColors))
+          changeDNA();
+        }
+
+      },
+      //减少
+      decrease(i) {
+        let item = this.customColors[i]
+
+        let flag = false
+        //符合条件 减少
+        if (this.customColors[i].percentage > 0) {
+          flag = true
+          item.leftDisabled = false
+          item.rightDisabled = false
+        } else {
+          console.log("返回")
+          item.leftDisabled = true
+          item.rightDisabled = false
+          this.$set(this.customColors, i, item)
+
+          return false
+        }
+
+        if (flag) {
+
+          this.$confirm('减少属性值1仅返回0.2可用点数，是否继续？', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+
+
+            //点击一次减1
+
+            var val = item.percentage
+            val = this.add(val, -1)
+
+            this.availableCount = this.add(this.availableCount, 0.2)
+            if (val < 0) {
+              val = 0;
+            }
+            item.percentage = val
+            this.$set(this.customColors, i, item)
+            changeDNA();
+            // this.$message({
+            //   type: 'success',
+            //   message: '操作成功!'
+            // });
+
+
+          }).catch(() => {
+            // this.$message({
+            //   type: 'info',
+            //   message: '已取消'
+            // });
+          });
+
+        }
+
+        localStorage.setItem("bar", JSON.stringify(this.customColors))
+
+      },
+      
+      add(num1, num2) {
+        const num1Digits = (num1.toString().split('.')[1] || '').length;
+        const num2Digits = (num2.toString().split('.')[1] || '').length;
+        const baseNum = Math.pow(10, Math.max(num1Digits, num2Digits));
+        return (num1 * baseNum + num2 * baseNum) / baseNum;
+      }
+    },
+    computed: {
+      total: function () {
+        let total = 0
+        this.customColors.forEach(item => total += item.percentage)
+        return 500 - total
+      },
+    },
+    filters: {
+      rounding(value) {
+        console.log(value)
+        return value.toFixed(1)
+      }
+    },
+
+  })
+ function changeDNA() {
+   self.parent.antihot=thevue.$data.customColors[0].percentage;
+   self.parent.antiCold=thevue.$data.customColors[1].percentage;
+   self.parent.antiMedi=thevue.$data.customColors[2].percentage;
+   self.parent.serverity=thevue.$data.customColors[3].percentage;
+   self.parent.lethality=thevue.$data.customColors[4].percentage;
+ }
+  // let data = {
+  //   "antihot":0,
+  //   "antiCold":0,
+  //   "antiMedi":0,
+  //   "serverity":0,
+  //   "lethality":0
+  // }
+
+  // export {
+  //   data
+  // }
+
+
+
+</script>

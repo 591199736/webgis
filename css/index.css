@@ -96,7 +96,7 @@ body{
 }
 .left-body .left-top{
     width: 100%;
-    height: 60%;
+    height: 50%;
     background: rgba(7, 7, 7, 0.8);
     overflow: hidden;
 }
@@ -151,7 +151,7 @@ body{
 .left-body .left-bottom{
     background: rgba(7, 7, 7, 0.8);
     width: 100%;
-    height: 39%;
+    height: 49%;
     margin-top: 1.6%;
     overflow: hidden;
 }
