@@ -28,11 +28,10 @@
   <link href="https://js.arcgis.com/4.25/esri/themes/light/main.css" rel="stylesheet">
   <link href="css/index.css" rel="stylesheet">
   <script src="https://js.arcgis.com/4.25/"></script>
-  <!--script src="js/plagueCompany.js"></script-->
+  <script src="js/plagueCompany.js"></script>
   <script src="js/jquery.js" type="text/javascript"></script>
   <!--script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.1/dist/echarts.min.js"></script>不太理解为什么引入这个之后会出错-->
-  <script>
-    var Selecting;
+  <!--script>
     //这里是可爱的后端，应该算是后端吧
     //变量定义
     //国家属性225个，从数据库读进来,id就是索引。
@@ -82,19 +81,7 @@
 
 
 
-    var na=[];
-    //前端：选取初始国家，将该国家的infected[i]++，然后让game=1
-    $.getJSON('data/Data.json', function (data1) {
-      console.log("json文件数据", data1);
-      for(i=0;i<206;i++){
-        na[i]=data1.data[i].ename;
-        infected[i]=data1.data[i].infected;
-        population[i]=data1.data[i].population
-        dead[i]=0;
-        console.log("na"+i, na[i]);
-      }
-    });
-  ename=na;
+
 
     //预定义main需要用的函数
     function timePlus(){//时间递增函数,可以用他自带的对象Date，但这个肯定不会出错
@@ -296,7 +283,60 @@
       }
     }
 
-  </script><!--程序运行-->
+  </script--><!--程序运行-->
+  <script>
+    var Selecting;
+    var ename=[];
+    var temperature=[];
+    var wealthy=[];
+    var density=[];
+    var population=[];
+    var infected=[];
+    var dead=[];
+    var infeSpeed=[];
+    var mediSpeed=[];
+    var dieSpeed=[];
+    var downfall=[];
+    var tradeFriend1=[];
+    var tradeFriend2=[];
+    var tradeFriend3=[];
+    var tradeFriend4=[];
+    var neighbor;
+    var na=[];
+    //前端：选取初始国家，将该国家的infected[i]++，然后让game=1
+
+
+
+    $.getJSON('data/Data.json', function (data1) {
+      console.log("json文件数据", data1);
+      for(i=0;i<206;i++){
+        na[i]=data1.data[i].ename;
+        infected[i]=data1.data[i].infected;
+        population[i]=data1.data[i].population
+        dead[i]=data1.data[i].death;
+        console.log("na"+i, na[i]);
+      }
+      temperature=data1.data.Temperature;
+      wealthy=data1.data.GDP;
+      density=data1.data.pop_density;
+      //infeSpeed=data1.data.infect_speed;
+      infeSpeed=0.1;
+      mediSpeed=data1.data.anti_speed;
+      dieSpeed=data1.data.fatality_speed;
+      downfall=data1.data.dowmfall;
+      tradeFriend1=data1.data[i].trade1;
+      tradeFriend2=data1.data[i].trade2;
+      tradeFriend3=data1.data[i].trade3;
+      tradeFriend4=data1.data[i].trade4;
+    });
+    ename=na;
+    $.getJSON('data/near.json', function (data2) {
+      console.log("json文件数据", data2);
+      neighbor=data2;
+        console.log("neighbor", neighbor[0][1]);
+
+    });
+  </script>
   <script>
     require(["esri/config", "esri/Map", "esri/views/MapView","esri/views/SceneView","esri/layers/FeatureLayer","esri/widgets/Feature","esri/views/ui/DefaultUI","esri/core/promiseUtils"], function(esriConfig, Map, MapView,SceneView,FeatureLayer,Feature,DefaultUI,promiseUtils) {
 
@@ -611,7 +651,8 @@
       //document.getElementsByClassName("top-left-title").innerHTML=Selecting;
       // Update at 30fps
       setInterval(() => {
-        for(i=0;i<206;i++){const living=Math.random()*population[i];infected[i]=Math.random()*living;dead[i]=population[i]-living;}
+        //for(i=0;i<206;i++){const living=Math.random()*population[i];infected[i]=Math.random()*living;dead[i]=population[i]-living;}
+        if(game==1){main();}
         layer.renderer = rend();
         requestAnimationFrame(layer);
       }, 1000 );
@@ -682,8 +723,9 @@
                                 if (game === 0) {
                                 if (confirm("你将从" + Selecting + "开始游戏")) {
                                   game = 1;
-                                  infected[ename.indexOf(Selecting)]++;
-                                  //main();
+                                  t=ename.indexOf(Selecting);
+                                  infected[t]=1;
+                                  main();
                                 }}
                                 document.getElementById("CountryName").innerHTML=Selecting+"感染情况";
                               } else{document . getElementById("CountryName").innerHTML="世界感染情况";

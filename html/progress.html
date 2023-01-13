@@ -64,7 +64,7 @@
       var a;
       for (var i = val; i <= 100; i++) {
           a = self.parent.mediPercent;//解药研发进度
-          a = i;
+          //a = i;
           barContent.style.width = progressBar.offsetWidth * (a / 100) + "px";
           label.innerText = ((a) + "%");
           window.setTimeout("testBegin(" + ++i + ")", 200)
