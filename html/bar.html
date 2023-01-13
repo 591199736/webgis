@@ -173,7 +173,7 @@
     data() {
       return {
         //availableCount: 50,
-        availableCount: self.parent.point,
+        availableCount: self.parent.DNApoint,
         percentage: 20,
         customColor: '#409eff',
         customColors: [
@@ -294,8 +294,8 @@
         }
 
         localStorage.setItem("bar", JSON.stringify(this.customColors))
-
       },
+
       
       add(num1, num2) {
         const num1Digits = (num1.toString().split('.')[1] || '').length;
@@ -319,6 +319,11 @@
     },
 
   })
+  setInterval(() => {
+    if(self.parent.game==1){
+    thevue.$data.availableCount+=0.01;}
+  }, 300 );
+
  function changeDNA() {
    self.parent.antihot=thevue.$data.customColors[0].percentage;
    self.parent.antiCold=thevue.$data.customColors[1].percentage;

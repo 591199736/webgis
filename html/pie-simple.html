@@ -135,9 +135,9 @@
           allDead = self.parent.dead[self.parent.ename.indexOf(self.parent.Selecting)];
           }else{
             option.series[0].name="World"
-            allPopu = self.parent.allPopu;
+            //allPopu = self.parent.allPopu;
             allInfec = self.parent.allInfec;
-            allDead = self.parent.allInfec;
+            allDead = self.parent.allDead;
           }
           allHealth = allPopu - allDead - allInfec;
         }

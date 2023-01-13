@@ -311,23 +311,25 @@
       console.log("json文件数据", data1);
       for(i=0;i<206;i++){
         na[i]=data1.data[i].ename;
-        infected[i]=data1.data[i].infected;
-        population[i]=data1.data[i].population
-        dead[i]=data1.data[i].death;
+        infected[i]=Number(data1.data[i].infected);
+        temperature[i]=Number(data1.data[i].Temperature);
+        wealthy[i]=Number(data1.data[i].GDP);
+        density[i]=Number(data1.data[i].pop_density);
+        infeSpeed[i]=Number(data1.data[i].infect_speed);
+        infeSpeed[i]=0.1;
+        mediSpeed[i]=Number(data1.data[i].anti_speed);
+        dieSpeed[i]=Number(data1.data[i].fatality_speed);
+        downfall[i]=Number(data1.data[i].downfall);
+        tradeFriend1[i]=Number(data1.data[i].trade1);
+        tradeFriend2[i]=Number(data1.data[i].trade2);
+        tradeFriend3[i]=Number(data1.data[i].trade3);
+        tradeFriend4[i]=Number(data1.data[i].trade4);
+        population[i]=Number(data1.data[i].population);
+        //infected[i]=population[i];
+        dead[i]=Number(data1.data[i].death);
         console.log("na"+i, na[i]);
       }
-      temperature=data1.data.Temperature;
-      wealthy=data1.data.GDP;
-      density=data1.data.pop_density;
-      //infeSpeed=data1.data.infect_speed;
-      infeSpeed=0.1;
-      mediSpeed=data1.data.anti_speed;
-      dieSpeed=data1.data.fatality_speed;
-      downfall=data1.data.dowmfall;
-      tradeFriend1=data1.data[i].trade1;
-      tradeFriend2=data1.data[i].trade2;
-      tradeFriend3=data1.data[i].trade3;
-      tradeFriend4=data1.data[i].trade4;
+
     });
     ename=na;
     $.getJSON('data/near.json', function (data2) {
@@ -652,10 +654,11 @@
       // Update at 30fps
       setInterval(() => {
         //for(i=0;i<206;i++){const living=Math.random()*population[i];infected[i]=Math.random()*living;dead[i]=population[i]-living;}
-        if(game==1){main();}
         layer.renderer = rend();
         requestAnimationFrame(layer);
-      }, 1000 );
+        if(mediPercent>0){confirm(mediPercent)}
+        //confirm(DNApoint);
+      }, 3000 );
       //如果需要条件判断可以用setTimeout+for循环
 
                   view.when().then(() => {
@@ -722,11 +725,16 @@
                               if(Selecting){//查询国家，更改饼图
                                 if (game === 0) {
                                 if (confirm("你将从" + Selecting + "开始游戏")) {
-                                  game = 1;
                                   t=ename.indexOf(Selecting);
-                                  infected[t]=1;
-                                  main();
+                                  infected[t]=population[t]*0.01;
+                                  game = 1;
+                                  setInterval(() => {if(game==1){
+                                    while(game==1) {
+                                      main();
+                                    }
+                                  }},1000);
                                 }}
+
                                 document.getElementById("CountryName").innerHTML=Selecting+"感染情况";
                               } else{document . getElementById("CountryName").innerHTML="世界感染情况";
                               }

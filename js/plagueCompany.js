@@ -22,10 +22,9 @@ allInfec=0;
 allDead=0;
 allHealth=0;
 allDownfall=0;
-allHealth=0;
 
 //游戏变量
-point=5;
+var DNApoint=5;
 game=0;
 
 //时间显示
@@ -49,14 +48,14 @@ function timePlus(){//时间递增函数,可以用他自带的对象Date，但�
 	day++;
 	if (month == 2) {
 		if (year % 4 == 0 && year / 100 != 0 || year % 400 == 0)
-			dayMax = 29;
+		{dayMax = 29;}
 		else
-			dayMax = 28;
+		{dayMax = 28;}
 	}
 	else if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12)
-		dayMax = 31;
+	{dayMax = 31;}
 	else
-		dayMax = 30;
+	{dayMax = 30;}
 	if (day > dayMax) {
 		day = day - dayMax;
 		month++;
@@ -65,7 +64,7 @@ function timePlus(){//时间递增函数,可以用他自带的对象Date，但�
 		month = month - 12;
 		year++;
 	}
-	var nowTime = myYear+'年'+fillZero(myMonth)+'月'+fillZero(myToday)+'日';
+	//var nowTime = myYear+'年'+fillZero(myMonth)+'月'+fillZero(myToday)+'日';
 	//nowTime就是要显示的东西
 }
 
@@ -100,8 +99,10 @@ function neighborInfect(i){
 			//没死光，没全感染
 			if (infected[j]!==population[j]-dead[j]){
 				infected[j]=infected[j]+100;//每次向外输出100个病例，该不会有国家人少得只有几千吧
-				if (infected[j]>population[j]-dead[j])//全部被感染的话不能变多
-					infected[j]=population[j]-dead[j];
+				allInfec+=100;
+				if (infected[j]>population[j]-dead[j]){//全部被感染的话不能变多
+					allInfec-=infected[j]-population[j]+dead[j]
+					infected[j]=population[j]-dead[j];}
 			}
 		}
 	}
@@ -111,18 +112,27 @@ function neighborInfect(i){
 function innerInfect(i){
 	//能调用这个函数就说明一定有感染，没死光，没全感染。
 	infected[i]=infected[i]+infeSpeed[i]*(population[i]-infected[i]);
-	if (infected[i]>population[i]-dead[i])
-		infected[i]=population[i]-dead[i];
+	allInfec+=infeSpeed[i]*(population[i]-infected[i]);
+	if (infected[i]>population[i]-dead[i]){
+		allInfec-=infected[i]-population[i]+dead[i]
+		infected[i]=population[i]-dead[i];}
 }
 
 //死亡
 function goDie(i){
-	if(dead[i]<population[i]){//没死光
-		dead[i]=dead[i]+dieSpeed[i]*infected[i];
-		infected[i]=infected[i]-dieSpeed[i]*infected[i];
-	}
-	if (dead[i]>population[i])
+	var newDie=Math.round(dieSpeed[i]*infected[i]);
+	if(newDie<1&&(lethality+serverity>80))
+		newDie=1;
+	dead[i]=dead[i]+newDie;
+	allDead+=newDie;
+
+	infected[i]=infected[i]-newDie;
+	if (dead[i]>population[i]){
+		allDead-=dead[i]-population[i];
 		dead[i]=population[i]
+	}
+	if (infected[i]<0)
+		infected[i]=0;
 }
 
 //更新mediSpeed[i]
@@ -146,11 +156,12 @@ function refreshDieSpeed(i){
 
 //更新世界数据
 function refreshWorld(){
+	allInfec=0;
+	allDead=0;
 	for (i = 0; i < ename.length; i++){
-		allInfec=0;
-		allDead=0;
-		allInfec=allInfec+infected[i];
-		allDead=allDead+dead[i];
+
+		//allInfec=allInfec+infected[i];
+		//allDead=allDead+dead[i];
 		allMediSpeed=allMediSpeed+mediSpeed[i];
 	}
 	allHealth=allPopu-allInfec-allDead;//或者剩下的就是健康人口，如果饼图可以有这个功能就可以不算。
@@ -162,7 +173,7 @@ function refreshWorld(){
 function main(){//main每时间单元循环步骤
 	while(game==1){
 		timePlus();
-		point+=0.5;
+		//DNApoint=DNApoint+0.5;
 
 		for(i = 0; i < ename.length; i++){
 			//感染了并且没死光
