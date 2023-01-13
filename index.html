@@ -69,6 +69,7 @@
   <link rel="stylesheet" type="text/css" href="star/css/introduction.css">
   <!--script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.1/dist/echarts.min.js"></script>不太理解为什么引入这个之后会出错-->
   <script>
+    ff1();
     var Selecting;
     var ename=[];
     var temperature=[];
@@ -94,7 +95,7 @@
     $.getJSON('data/neighbor.json',  function (data) {
       var res = data.date.value.date;
       nbresult = JSON.stringify(res);
-      alert("操作成功！");
+      //alert("操作成功！");
       //neighbor = []
       for(var i=0;i<res.length;i++)
       {
@@ -542,7 +543,7 @@
                           document.getElementById("CountryName").innerHTML=Selecting+"感染情况";
                         } else{document . getElementById("CountryName").innerHTML="世界感染情况";
                         }
-                      }, 1000);
+                      }, 1000/30);//速度
                       // Update at 30fps
 
                       //confirm("hi "+Selecting);
@@ -593,13 +594,13 @@
   </script><!--这是那个时间的代码-->
   <script src="star/js/watch.js"></script>
   <script>
-    var name = "不知名病毒";
-    if(sessionStorage.getItem("name")!==null){
-    window.name = sessionStorage.getItem("name");}
+
     function ff1() {
       //从sessionStorage中取值
-
-      alert("姓名：" + name);
+      var Myname = "不知名病毒";
+      if(sessionStorage.getItem("name")!==null){
+         window.name = sessionStorage.getItem("name");}
+      document.getElementById("MyName").innerHTML="你好，"+Myname+"！感染全世界吧！";
     }
     // 世界感染人数
     var wm2 = new watcher({
@@ -927,13 +928,13 @@
 <body>
 <div class="header">
   <div class="header-left">
-    <span>感染全世界吧！</span>
+    <span id="MyName">你好，感染全世界吧！</span>
   </div>
   <div class="header-time">
     <span id="time"></span>
-    <button onclick="ff1()">
+    <button style="width: 40px" onclick="ff1()">
       读档</button>
-    <button onclick="ff1()">
+    <button style="width: 40px;margin-left: 5px" onclick="ff1()">
     存档</button>
   </div>
 </div>
