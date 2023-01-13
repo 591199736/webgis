@@ -86,6 +86,7 @@ function tradeInfect(i){
 		//没死光，没全感染
 		if (infected[i]!=population[i]-dead[i]){
 			infected[i]=infected[i]+100;//每次向外输出100个病例，该不会有国家人少得只有几千吧
+			a
 			if(infected[i]>population[i]-dead[i])//全部被感染的话不能变多
 				infected[i]=population[i]-dead[i];
 		}
