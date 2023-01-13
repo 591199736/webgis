@@ -53,26 +53,16 @@
 
 <script type="text/javascript">
   //窗体加载
-  window.onload = function () {
-    testBegin(0);
-  }
-  //测试开始
-  function testBegin(val) {
+var a=self.parent.mediPercent;
     var progressBar = document.getElementById("progressBar");
     var barContent = document.getElementById("barContent");
     var label = document.getElementById("progressShow");
-      var a;
-      setInterval(() => {
-          for (var i = val; i <= 100; i++) {
-
-              a = self.parent.mediPercent;//解药研发进度
-              //a = i;
+    setInterval(() => {
+              //a = Matn.round(self.parent.mediPercent);//解药研发进度
+              a = self.parent.mediPercent.toFixed(2);//解药研发进度
               barContent.style.width = progressBar.offsetWidth * (a / 100) + "px";
               label.innerText = ((a) + "%");
-              window.setTimeout("testBegin(" + ++i + ")", 200)
-              break;
-          }
-      }, 3000 );
+              window.setTimeout("testBegin(" + ++a + ")", 200)
+      }, 1000 );
 
-  }
 </script>

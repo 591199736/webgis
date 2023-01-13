@@ -22,6 +22,19 @@
       width:100%;
       overflow: hidden;
     }
+    .background-img {
+      background-image: url("star/image/div1.jpg");
+      height: 400px;
+      width: 800px;
+      background-repeat: no-repeat;
+      background-size: cover;
+      margin: 5% auto;
+      padding: 20px;
+      border: 1px solid #2a3cad;
+      border-radius: 4px;
+      box-shadow: 0px 0px 5px #2a3cad;
+      position: relative;
+    }
 
   </style>
 
@@ -30,6 +43,9 @@
   <script src="https://js.arcgis.com/4.25/"></script>
   <script src="./js/plagueCompany.js"></script>
   <script src="./js/jquery.js" type="text/javascript"></script>
+  <link rel="stylesheet" type="text/css" href="star/css/css1.css">
+  <link rel="stylesheet" type="text/css" href="star/css/pop.css">
+  <link rel="stylesheet" type="text/css" href="star/css/introduction.css">
   <!--script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.1/dist/echarts.min.js"></script>不太理解为什么引入这个之后会出错-->
   <script>
     var Selecting;
@@ -48,9 +64,28 @@
     var tradeFriend2=[];
     var tradeFriend3=[];
     var tradeFriend4=[];
-    var neighbor;
+    var neighbor=[];
+    //neighbor=nearData;
+    //console.log(neighbor);
     var na=[];
     //前端：选取初始国家，将该国家的infected[i]++，然后让game=1
+
+    $.getJSON('data/neighbor.json',  function (data) {
+      var res = data.date.value.date;
+      nbresult = JSON.stringify(res);
+      alert("操作成功！");
+      //neighbor = []
+      for(var i=0;i<res.length;i++)
+      {
+        neighbor[i] = [];
+        for(var j=0;j<res.length;j++)
+        {
+          field = "id"+(j+1).toString();
+          neighbor[i][j] = res[i][field];
+        }
+      }
+      console.log("neighbor文件数据", neighbor);
+    })
 
 
 
@@ -63,7 +98,6 @@
         wealthy[i]=Number(data1.data[i].GDP);
         density[i]=Number(data1.data[i].pop_density);
         infeSpeed[i]=Number(data1.data[i].infect_speed);
-        infeSpeed[i]=0.1;
         mediSpeed[i]=Number(data1.data[i].anti_speed);
         dieSpeed[i]=Number(data1.data[i].fatality_speed);
         downfall[i]=Number(data1.data[i].downfall);
@@ -79,13 +113,8 @@
 
     });
     ename=na;
-    $.getJSON('data/near.json', function (data2) {
-      console.log("json文件数据", data2);
-      neighbor=data2;
-        console.log("neighbor", neighbor[0][1]);
 
-    });
-  </script>
+  </script><!--读数据-->
   <script>
     require(["esri/config", "esri/Map", "esri/views/MapView","esri/views/SceneView","esri/layers/FeatureLayer","esri/widgets/Feature","esri/views/ui/DefaultUI","esri/core/promiseUtils"], function(esriConfig, Map, MapView,SceneView,FeatureLayer,Feature,DefaultUI,promiseUtils) {
 
@@ -94,11 +123,11 @@
       const map = new Map({
         //basemap: "arcgis-topographic" // Basemap layer service
         basemap: "hybrid",
+        //const view = new SceneView({,
         ground: "world-elevation"
       });
 
       const view = new MapView({
-        //const view = new SceneView({
         map: map,
         center: [118.805, 30], // Longitude, latitude
         maxBounds: [0, -90, 180, 90],
@@ -398,17 +427,16 @@
       // layer.refreshInterval = 0.1;
 
       //document.getElementsByClassName("top-left-title").innerHTML=Selecting;
-      // Update at 30fps
       setInterval(() => {
-        //for(i=0;i<206;i++){const living=Math.random()*population[i];infected[i]=Math.random()*living;dead[i]=population[i]-living;}
-        layer.renderer = rend();
-        requestAnimationFrame(layer);
-        if(mediPercent>0){confirm(mediPercent)}
-        //confirm(DNApoint);
-      }, 3000 );
+  //for(i=0;i<206;i++){const living=Math.random()*population[i];infected[i]=Math.random()*living;dead[i]=population[i]-living;}
+          layer.renderer = rend();
+          requestAnimationFrame(layer);
+          if(mediPercent>0){confirm(mediPercent)}
+  //confirm(DNApoint);
+      }, 6000 )
       //如果需要条件判断可以用setTimeout+for循环
 
-                  view.when().then(() => {
+      view.when().then(() => {
                       // Create a default graphic for when the application starts
                       const graphic = {
                           popupTemplate: {
@@ -456,43 +484,45 @@
                       // Listen for the pointer-move event on the View
                       // and make sure that function is not invoked more
                       // than one at a time
-                      view.on("click", (event) => {
-                          debouncedUpdate(event).catch((err) => {
-                              if (!promiseUtils.isAbortError(err)) {
-                                  throw err;}
-                          });
-                        function selectName(){Selecting=$("#feature-node").text();}
+                    view.on("click", (event) => {
+                      debouncedUpdate(event).catch((err) => {
+                        if (!promiseUtils.isAbortError(err)) {
+                          throw err;}
+                      });
+                      function selectName(){Selecting=$("#feature-node").text();}
+                      selectName();
+                      if(Selecting){//查询国家，更改饼图
+                        document.getElementById("CountryName").innerHTML=Selecting+"感染情况";
+                      } else{document . getElementById("CountryName").innerHTML="世界感染情况";}
+
+                      setTimeout(function () {
                         selectName();
                         if(Selecting){//查询国家，更改饼图
-                            document.getElementById("CountryName").innerHTML=Selecting+"感染情况";
-                        } else{document . getElementById("CountryName").innerHTML="世界感染情况";}
+                          if (game === 0) {
+                            if (confirm("你将从" + Selecting + "开始游戏")) {
+                              neighbor[157][36]=1;
+                              neighbor[36][157]=1;
+                              t=ename.indexOf(Selecting);
+                              infected[t]=10;
+                              game = 1;
+                              getApi();
+                              setInterval(() => {if(game==1){
+                                pmain();
+                              }},1000);
+                            }}
 
-                          setTimeout(function () {
-                              selectName();
-                              if(Selecting){//查询国家，更改饼图
-                                if (game === 0) {
-                                if (confirm("你将从" + Selecting + "开始游戏")) {
-                                  t=ename.indexOf(Selecting);
-                                  infected[t]=population[t]*0.01;
-                                  game = 1;
-                                  setInterval(() => {if(game==1){
-                                    while(game==1) {
-                                      main();
-                                    }
-                                  }},1000);
-                                }}
+                          document.getElementById("CountryName").innerHTML=Selecting+"感染情况";
+                        } else{document . getElementById("CountryName").innerHTML="世界感染情况";
+                        }
+                      }, 1000);
+                      // Update at 30fps
 
-                                document.getElementById("CountryName").innerHTML=Selecting+"感染情况";
-                              } else{document . getElementById("CountryName").innerHTML="世界感染情况";
-                              }
-                          }, 1000);
-
-
-
-                        //confirm("hi "+Selecting);
-                      });
+                      //confirm("hi "+Selecting);
+                    });
                   });
                   });
+
+
     })
 
   </script><!--这是地图的代码-->
@@ -510,7 +540,7 @@
       var week = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
       var nowTime;
 
-      nowTime = year+'年'+fillZero(month)+'月'+fillZero(day)+'日'+'&nbsp;&nbsp;'+fillZero(myHour)+':'+fillZero(myMinute)+':'+fillZero(mySecond)+'&nbsp;&nbsp;'+week[myDay]+'&nbsp;&nbsp;';
+      nowTime = year+'年'+fillZero(month)+'月'+fillZero(day)+'日'+'&nbsp;&nbsp;';
       //console.log(nowTime);
       $('#time').html(nowTime);
     }
@@ -526,14 +556,350 @@
     //大屏
     setInterval(getTime,1000);
   </script><!--这是那个时间的代码-->
+  <script src="star/js/watch.js"></script>
+  <script>
+    var name = "不知名病毒";
+    if(sessionStorage.getItem("name")!==null){
+    window.name = sessionStorage.getItem("name");}
+    function ff1() {
+      //从sessionStorage中取值
+
+      alert("姓名：" + name);
+    }
+    // 世界感染人数
+    var wm2 = new watcher({
+      data: {
+        b: 1
+      },
+      watch: {
+        b(newVal, oldVal) {
+          console.log("old value = ", oldVal, ",new value = ", newVal);
+          // 感染人数达到一百
+          if (newVal >= 100 && oldVal < 100) {
+            var div = document.getElementById('background');
+            $("#text_weiji").html("第一例感染病例在地球上被发现，科学家将其命名为" + window.name + "。")
+            $("#messagetitle").html("危机乍起")
+            div.style.display = "block";
+            setTimeout(function () {
+              var div = document.getElementById('background');
+              div.style.display = "none";
+            }, 5 * 1000);
+          }
+
+          // 感染人数达到1000
+          if (newVal >= 1000 && oldVal < 1000) {
+            var div = document.getElementById('background');
+            $("#text_weiji").html("特效药的研发已经开始。")
+            $("#messagetitle").html("开始反击")
+            div.style.display = "block";
+            setTimeout(function () {
+              var div = document.getElementById('background');
+              div.style.display = "none";
+            }, 5 * 1000);
+          }
+
+          // 感染人数达到10000
+          if (newVal >= 10000 && oldVal < 1000) {
+            var div = document.getElementById('background');
+            $("#text_weiji").html("世界卫生组织发出通告：勤洗手，勤通风，防疫安全在心中！全民抗疫在一起，走向平安的天明！")
+            $("#messagetitle").html("全民抗疫")
+            div.style.display = "block";
+            setTimeout(function () {
+              var div = document.getElementById('background');
+              div.style.display = "none";
+            }, 5 * 1000);
+          }
+
+          // 感染人数达到1%*世界人口总数
+          if (newVal >= allPopu*0.1 && oldVal < allPopu*0.1) {
+            var div = document.getElementById('background');
+            $("#text_weiji").html("中山医派出最强专家组前往支援！")
+            $("#messagetitle").html("限时狙击")
+            div.style.display = "block";
+            setTimeout(function () {
+              var div = document.getElementById('background');
+              div.style.display = "none";
+            }, 5 * 1000);
+          }
+
+          // 感染人数达到70%*世界总人数
+          if (newVal >= allPopu*0.7 && oldVal < allPopu*0.7) {
+            var div = document.getElementById('background');
+            $("#text_weiji").html("人类科学家不得不带病研究，特效药研发进度放缓。")
+            $("#messagetitle").html("雾海航行")
+            div.style.display = "block";
+            setTimeout(function () {
+              var div = document.getElementById('background');
+              div.style.display = "none";
+            }, 5 * 1000);
+          }
+
+          // 世界感染人数达到90%*世界总人数
+          if (newVal >= allPopu*0.9 && oldVal < allPopu*0.9) {
+            var div = document.getElementById('background');
+            $("#text_weiji").html("人类仅剩下10%未感染人口，但他们没有放弃最后的隔离。")
+            $("#messagetitle").html("最后高地")
+            div.style.display = "block";
+            setTimeout(function () {
+              var div = document.getElementById('background');
+              div.style.display = "none";
+            }, 5 * 1000);
+          }
+
+          // 世界感染人数达到世界总人数
+          if (newVal >= allPopu && oldVal < allPopu){
+            var div = document.getElementById('background');
+            $("#text_weiji").html("世界上最后一个仅存地健康人类也被感染，您的病毒已经感染全人类！他们能否在这场传染性极高的瘟疫中获得胜利呢？")
+            $("#messagetitle").html("鬼火燎原")
+            div.style.display = "block";
+            setTimeout(function () {
+              var div = document.getElementById('background');
+              div.style.display = "none";
+            }, 5 * 1000);
+          }
+
+        }
+      }
+    })
+    // 世界死亡人数
+    var wd = new watcher({
+      data: {
+        b: 1
+      },
+      watch: {
+        b(newVal, oldVal) {
+          console.log("old value = ", oldVal, ",new value = ", newVal);
+          // 死亡人数达到一百
+          if (newVal >= 100 && oldVal < 100) {
+            var div = document.getElementById('background');
+            $("#text_weiji").html(window.name + "病毒杀伤力超过黑死病。")
+            $("#messagetitle").html("病情公报")
+            div.style.display = "block";
+            setTimeout(function () {
+              var div = document.getElementById('background');
+              div.style.display = "none";
+            }, 5 * 1000);
+          }
+
+          // 死亡人数达到一百
+          if (newVal >= allPopu*0.9 && oldVal < allPopu*0.9) {
+            var div = document.getElementById('background');
+            $("#text_weiji").html("全球幸存人口仅剩下10%！但他们依旧没有放弃反抗。")
+            $("#messagetitle").html("人类不死")
+            div.style.display = "block";
+            setTimeout(function () {
+              var div = document.getElementById('background');
+              div.style.display = "none";
+            }, 5 * 1000);
+          }
+
+        }
+      }
+    })
+    // 中国感染人数
+    var cg = new watcher({
+      data: {
+        b: 1
+      },
+      watch: {
+        b(newVal, oldVal) {
+          console.log("old value = ", oldVal, ",new value = ", newVal);
+          // 感染人数达到30%*中国人口总数
+          if (newVal >= 0.3*population[ename.indexOf("China")] && oldVal < 0.3*population[ename.indexOf("China")] ) {
+            var div = document.getElementById('background');
+            $("#text_weiji").html("中国政府已将"+window.name + "列为甲级传染病。")
+            $("#messagetitle").html("疫情蔓延")
+            div.style.display = "block";
+            setTimeout(function () {
+              var div = document.getElementById('background');
+              div.style.display = "none";
+            }, 5 * 1000);
+          }
+
+          // 中国感染人数达到60%*中国总人数
+          if (newVal >= 0.6*population[ename.indexOf("China")]  && oldVal < 0.6*population[ename.indexOf("China")] ) {
+            var div = document.getElementById('background');
+            $("#text_weiji").html("中国政府在如此严峻的形势下依旧有条不紊地保障了食品等物资的供应链！人们深信政府一定会做出最明智的判断！")
+            $("#messagetitle").html("临危不乱")
+            div.style.display = "block";
+            setTimeout(function () {
+              var div = document.getElementById('background');
+              div.style.display = "none";
+            }, 5 * 1000);
+          }
+
+        }
+      }
+    })
+    // 美国感染人数
+    var ag = new watcher({
+      data: {
+        b: 1
+      },
+      watch: {
+        b(newVal, oldVal) {
+          console.log("old value = ", oldVal, ",new value = ", newVal);
+          // 感染人数达到60%*美国人口总数
+          if (newVal >= population[193]*0.7 && oldVal < population[193]*0.7) {
+            var div = document.getElementById('background');
+            $("#text_weiji").html("美国政府已垮台。")
+            $("#messagetitle").html("恐怖肆虐")
+            div.style.display = "block";
+            setTimeout(function () {
+              var div = document.getElementById('background');
+              div.style.display = "none";
+            }, 5 * 1000);
+          }
+
+          // 美国感染人数=美国人口总数
+          if (newVal >= population[193] && oldVal < population[193]) {
+            var div = document.getElementById('background');
+            $("#text_weiji").html("美国人口已经全部感染！谁能想到如此霸权国家在疫情防控方面的措施竟然如此散漫！究竟是资本家的利益驱使，还是对科学的漠视与傲慢？")
+            $("#messagetitle").html("管控无力")
+            div.style.display = "block";
+            setTimeout(function () {
+              var div = document.getElementById('background');
+              div.style.display = "none";
+            }, 5 * 1000);
+          }
+
+        }
+      }
+    })
+    // 特效药研究进度
+    var yj = new watcher({
+      data: {
+        b: 1
+      },
+      watch: {
+        b(newVal, oldVal) {
+          console.log("old value = ", oldVal, ",new value = ", newVal);
+          // 50%
+          if (newVal >= 50 && oldVal < 50) {
+            var div = document.getElementById('background');
+            $("#text_weiji").html("特效药研发进度已经达到50%。")
+            $("#messagetitle").html("好风借力")
+            div.style.display = "block";
+            setTimeout(function () {
+              var div = document.getElementById('background');
+              div.style.display = "none";
+            }, 5 * 1000);
+          }
+
+          // 90%
+          if (newVal >= 90 && oldVal < 90) {
+            var div = document.getElementById('background');
+            $("#text_weiji").html("严峻的环境没有摧垮人类科学家，特效药的研究进度已经达到90%！")
+            $("#messagetitle").html("战斗先锋")
+            div.style.display = "block";
+            setTimeout(function () {
+              var div = document.getElementById('background');
+              div.style.display = "none";
+            }, 5 * 1000);
+          }
+
+          // 100%
+          if (newVal >= 100 && oldVal < 100) {
+            var div = document.getElementById('background');
+            $("#text_weiji").html("疫特效药研发已经完成！正在派送去全球各地拯救世界！")
+            $("#messagetitle").html("方舟济世")
+            div.style.display = "block";
+            setTimeout(function () {
+              var div = document.getElementById('background');
+              div.style.display = "none";
+            }, 5 * 1000);
+          }
+
+        }
+      }
+    })
+    // 致死性
+    var death = new watcher({
+      data: {
+        b: 1
+      },
+      watch: {
+        b(newVal, oldVal) {
+          console.log("old value = ", oldVal, ",new value = ", newVal);
+          // 50%
+          if (newVal >= 5 && oldVal < 5) {
+            var div = document.getElementById('background');
+            $("#text_weiji").html("越高致死率将使得人类科学家越奋力地投入研究！")
+            $("#messagetitle").html("医者仁心")
+            div.style.display = "block";
+            setTimeout(function () {
+              var div = document.getElementById('background');
+              div.style.display = "none";
+            }, 5 * 1000);
+          }
+        }
+      }
+    })
+    // 严重性
+    var sss = new watcher({
+      data: {
+        b: 1
+      },
+      watch: {
+        b(newVal, oldVal) {
+          console.log("old value = ", oldVal, ",new value = ", newVal);
+          // 50%
+          if (newVal >= 20 && oldVal < 20) {
+            var div = document.getElementById('background');
+            $("#text_weiji").html("严重的症状正在折磨科学家们的身体，特效药研究进度进一步放缓。")
+            $("#messagetitle").html("免疫危城")
+            div.style.display = "block";
+            setTimeout(function () {
+              var div = document.getElementById('background');
+              div.style.display = "none";
+            }, 5 * 1000);
+          }
+        }
+      }
+    })
+    //假设每隔5秒发送一次请求（假如直接跑不需要请求这个其实可以不需要）
+
+
+    function getApi() {
+      //confirm("api")
+      //设置时间 5-秒  1000-毫秒  这里设置你自己想要的时间
+      setTimeout(getApi, 5000);
+      wm2.b = allInfec;
+      wd.b = allDead;
+      cg.b = infected[36];//中国感染人数
+      ag.b = infected[193];
+      yj, b = mediPercent;
+      death.b = lethality;
+      sss.b = serverity;
+    }
+    // 实现弹窗的手动关闭（点击窗口）
+    var close = document.getElementById('close-button');
+    var div2 = document.getElementById('background');
+    window.onload = function () {
+      $("#close-button").on("click", function () {
+        var div2 = document.getElementById('background');
+        div2.style.display = "none";
+      });
+    }
+
+    window.onclick = function close(e) {
+      if (e.target === div2) {
+        div2.style.display = "none";
+      }
+    }
+  </script><!--弹窗-->
 </head>
 <body>
 <div class="header">
   <div class="header-left">
-    <span>这是一个世界地图欸</span>
+    <span>感染全世界吧！</span>
   </div>
   <div class="header-time">
     <span id="time"></span>
+    <button onclick="ff1()">
+      读档</button>
+    <button onclick="ff1()">
+    存档</button>
   </div>
 </div>
 <!--div class="">
@@ -541,6 +907,24 @@
     <div id="viewDiv"></div>
 </div-->
 <div class="content">
+  <section id="background">
+    <div class="container">
+      <div class="background-img">
+        <span id="close-button">×</span>
+        <div class="box">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <div class="content">
+            <h2 id="messagetitle"> 危机乍现 </h2>
+            <p id="text_weiji">All our modules are designed to play nicely with responsive of course. At the end of the day it comes down to the theme you use - our code doesn't get in your way.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
   <div class="content-con">
     <div class="left-body" >
       <div class="left-top public-bg">
@@ -572,5 +956,7 @@
     </div>
   </div>
 </div>
+  <!-- 弹窗 -->
+
 </body>
 </html>

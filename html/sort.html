@@ -53,7 +53,7 @@
             formatter:function (params) {
                 var relVal = params[0].name;
                 for (var i = 0, l = params.length; i < l; i++) {
-                    console.log('tooltip数据值',params[i].value)
+                    //console.log('tooltip数据值',params[i].value)
                     //遍历出来的值一般是字符串，需要转换成数字，再进项tiFixed四舍五入
                     relVal += '<br/>' + params[i].marker + params[i].seriesName + ' : ' + Number(params[i].value).toFixed(2) + '%'
                 }

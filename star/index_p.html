@@ -11,196 +11,196 @@
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="./js/tmripple.js"></script>
     <style>
-            body {
-                background: url("image/background.jpg") no-repeat center center; /*加载背景图*/ /* 背景图不平铺 */
-                background-size: cover; /* 让背景图基于容器大小伸缩 */
-                background-attachment: fixed; /* 当内容高度大于图片高度时，背景图像的位置相对于viewport固定 */
-                //此条属性必须设置否则可能无效/ background-color:#CCCCCC; /* 设置背景颜色，背景图加载过程中会显示背景色 */
+        body {
+            background: url("image/background.jpg") no-repeat center center; /*加载背景图*/ /* 背景图不平铺 */
+            background-size: cover; /* 让背景图基于容器大小伸缩 */
+            background-attachment: fixed; /* 当内容高度大于图片高度时，背景图像的位置相对于viewport固定 */
+        //此条属性必须设置否则可能无效/ background-color:#CCCCCC; /* 设置背景颜色，背景图加载过程中会显示背景色 */
+        }
+
+        .colortxt {
+            font-size: 300px;
+            background: linear-gradient(to right, red, blue);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .fangsheng {
+            /* 要把阴影与大小配合好，一般来说大小都是偏大时采用 */
+            font-family: "Arial Rounded MT Bold", "Helvetica Rounded", Arial, sans-serif;
+            text-transform: uppercase; /* 全开大写 */
+            font-size: 300px;
+            color: #f1ebe5;
+            text-shadow: 0 8px 9px #c4b59d, 0px -2px 1px #fff;
+            font-weight: bold;
+            letter-spacing: -4px;
+            /*background: linear-gradient(to bottom, #ece4d9 0%,#e9dfd1 100%);*/
+        }
+
+        .mycss {
+            color: rgba(245,245,220,0.8);
+            font-size: 300px;
+            font-family: "Microsoft YaHei";
+            animation: fadeInAnimation ease 3s;
+            animation-iteration-count: 1; /*设置动画播放次数*/
+            animation-fill-mode: forwards; /*设置样式以在动画不播放时应用元素。forward是设置动画结束后，使用元素的结束属性值*/
+        }
+
+        @keyframes fadeInAnimation {
+            0% {
+                opacity: 0; /*设置不透明度*/
             }
 
-            .colortxt {
-                font-size: 300px;
-                background: linear-gradient(to right, red, blue);
-                -webkit-background-clip: text;
-                color: transparent;
+            100% {
+                opacity: 1;
             }
+        }
 
-            .fangsheng {
-                /* 要把阴影与大小配合好，一般来说大小都是偏大时采用 */
-                font-family: "Arial Rounded MT Bold", "Helvetica Rounded", Arial, sans-serif;
-                text-transform: uppercase; /* 全开大写 */
-                font-size: 300px;
-                color: #f1ebe5;
-                text-shadow: 0 8px 9px #c4b59d, 0px -2px 1px #fff;
-                font-weight: bold;
-                letter-spacing: -4px;
-                /*background: linear-gradient(to bottom, #ece4d9 0%,#e9dfd1 100%);*/
-            }
+        .background-img {
+            background-image: url("/image/div1.jpg");
+            height: 400px;
+            width: 800px;
+            background-repeat: no-repeat;
+            background-size: cover;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #2a3cad;
+            border-radius: 4px;
+            box-shadow: 0px 0px 5px #2a3cad;
+            position: relative;
+        }
 
-            .mycss {
-                color: rgba(245,245,220,0.8);
-                font-size: 300px;
-                font-family: "Microsoft YaHei";
-                animation: fadeInAnimation ease 3s;
-                animation-iteration-count: 1; /*设置动画播放次数*/
-                animation-fill-mode: forwards; /*设置样式以在动画不播放时应用元素。forward是设置动画结束后，使用元素的结束属性值*/
-            }
+        .custom-btn {
+            width: 130px;
+            height: 40px;
+            color: #fff;
+            border-radius: 5px;
+            padding: 10px 25px;
+            font-family: 'Lato', sans-serif;
+            font-weight: 500;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            display: inline-block;
+            box-shadow: inset 2px 2px 2px 0px rgba(255,255,255,.5), 7px 7px 20px 0px rgba(0,0,0,.1), 4px 4px 5px 0px rgba(0,0,0,.1);
+            outline: none;
+        }
 
-            @keyframes fadeInAnimation {
-                0% {
-                    opacity: 0; /*设置不透明度*/
-                }
+        /* 8 */
+        .btn-8 {
+            width: 400px;
+            height: 100px;
+            background-color: #9c8df4;
+            background-image: linear-gradient(315deg, #9c8df4 0%, #892659 74%);
+            padding: 0;
+            border: none;
+            text-align: center;
+            line-height: 80px;
+            position: relative;
+            top: 65%
+        }
 
-                100% {
-                    opacity: 1;
-                }
-            }
+        .btn-8 span {
+            position: relative;
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
 
-            .background-img {
-                background-image: url("/image/div1.jpg");
-                height: 400px;
-                width: 800px;
-                background-repeat: no-repeat;
-                background-size: cover;
-                margin: 5% auto;
-                padding: 20px;
-                border: 1px solid #2a3cad;
-                border-radius: 4px;
-                box-shadow: 0px 0px 5px #2a3cad;
-                position: relative;
-            }
+        .btn-8:before,
+        .btn-8:after {
+            position: absolute;
+            content: "";
+            right: 0;
+            bottom: 0;
+            background: #892659;
+            /*box-shadow:  4px 4px 6px 0 rgba(255,255,255,.5),
+          -4px -4px 6px 0 rgba(116, 125, 136, .2),
+inset -4px -4px 6px 0 rgba(255,255,255,.5),
+inset 4px 4px 6px 0 rgba(116, 125, 136, .3);*/
+            transition: all 0.3s ease;
+        }
 
-            .custom-btn {
-                width: 130px;
-                height: 40px;
-                color: #fff;
-                border-radius: 5px;
-                padding: 10px 25px;
-                font-family: 'Lato', sans-serif;
-                font-weight: 500;
-                background: transparent;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                position: relative;
-                display: inline-block;
-                box-shadow: inset 2px 2px 2px 0px rgba(255,255,255,.5), 7px 7px 20px 0px rgba(0,0,0,.1), 4px 4px 5px 0px rgba(0,0,0,.1);
-                outline: none;
-            }
+        .btn-8:before {
+            height: 0%;
+            width: 2px;
+        }
 
-            /* 8 */
-            .btn-8 {
-                width: 400px;
-                height: 100px;
-                background-color: #9c8df4;
-                background-image: linear-gradient(315deg, #9c8df4 0%, #892659 74%);
-                padding: 0;
-                border: none;
-                text-align: center;
-                line-height: 80px;
-                position: relative;
-                top: 65%
-            }
+        .btn-8:after {
+            width: 0%;
+            height: 2px;
+        }
 
-                .btn-8 span {
-                    position: relative;
-                    display: block;
-                    width: 100%;
-                    height: 100%;
-                }
+        .btn-8:hover:before {
+            height: 100%;
+        }
 
-                .btn-8:before,
-                .btn-8:after {
-                    position: absolute;
-                    content: "";
-                    right: 0;
-                    bottom: 0;
-                    background: #892659;
-                    /*box-shadow:  4px 4px 6px 0 rgba(255,255,255,.5),
-                  -4px -4px 6px 0 rgba(116, 125, 136, .2),
-        inset -4px -4px 6px 0 rgba(255,255,255,.5),
-        inset 4px 4px 6px 0 rgba(116, 125, 136, .3);*/
-                    transition: all 0.3s ease;
-                }
+        .btn-8:hover:after {
+            width: 100%;
+        }
 
-                .btn-8:before {
-                    height: 0%;
-                    width: 2px;
-                }
+        .btn-8:hover {
+            background: transparent;
+        }
 
-                .btn-8:after {
-                    width: 0%;
-                    height: 2px;
-                }
+        .btn-8 span:hover {
+            color: #892659;
+        }
 
-                .btn-8:hover:before {
-                    height: 100%;
-                }
+        .btn-8 span:before,
+        .btn-8 span:after {
+            position: absolute;
+            content: "";
+            left: 0;
+            top: 0;
+            background: #892659;
+            /*box-shadow:  4px 4px 6px 0 rgba(255,255,255,.5),
+          -4px -4px 6px 0 rgba(116, 125, 136, .2),
+inset -4px -4px 6px 0 rgba(255,255,255,.5),
+inset 4px 4px 6px 0 rgba(116, 125, 136, .3);*/
+            transition: all 0.3s ease;
+        }
 
-                .btn-8:hover:after {
-                    width: 100%;
-                }
+        .btn-8 span:before {
+            width: 2px;
+            height: 0%;
+        }
 
-                .btn-8:hover {
-                    background: transparent;
-                }
+        .btn-8 span:after {
+            height: 2px;
+            width: 0%;
+        }
 
-                .btn-8 span:hover {
-                    color: #892659;
-                }
+        .btn-8 span:hover:before {
+            height: 100%;
+        }
 
-                .btn-8 span:before,
-                .btn-8 span:after {
-                    position: absolute;
-                    content: "";
-                    left: 0;
-                    top: 0;
-                    background: #892659;
-                    /*box-shadow:  4px 4px 6px 0 rgba(255,255,255,.5),
-                  -4px -4px 6px 0 rgba(116, 125, 136, .2),
-        inset -4px -4px 6px 0 rgba(255,255,255,.5),
-        inset 4px 4px 6px 0 rgba(116, 125, 136, .3);*/
-                    transition: all 0.3s ease;
-                }
+        .btn-8 span:hover:after {
+            width: 100%;
+        }
 
-                .btn-8 span:before {
-                    width: 2px;
-                    height: 0%;
-                }
+        #buttons {
+            display: flex;
+            justify-content: space-evenly;
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
 
-                .btn-8 span:after {
-                    height: 2px;
-                    width: 0%;
-                }
-
-                .btn-8 span:hover:before {
-                    height: 100%;
-                }
-
-                .btn-8 span:hover:after {
-                    width: 100%;
-                }
-
-            #buttons {
-                display: flex;
-                justify-content: space-evenly;
-                position: fixed;
-                top: 0;
-                right: 0;
-                bottom: 0;
-                left: 0;
-            }
-
-            #en {
-                position: relative;
-                top: 50%
-            }
+        #en {
+            position: relative;
+            top: 50%
+        }
         .modal {
             width:50%;
             height:100%;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            overflow:hidden 
+            overflow:hidden
         }
         .modal-header {
             padding: 6px 10px 6px 20px;
@@ -225,6 +225,15 @@
             color: white;
         }
 
+        .modal-select {
+            appearance: none;
+            -moz-appearance: none;
+            -webkit-appearance: none;
+            padding-right: 10px;
+            background: url("../css/images/newpic/chevron-down.png") no-repeat scroll right center transparent;
+            background-position-x: 185px;
+        }
+
         .modal-input {
             background-color: #1E253F;
             border: 1px solid #007DCF
@@ -245,124 +254,124 @@
 
 
 
-    <div class="mycss" style="text-align: center; font-weight: 600; font-size: 300px;">
-        <font>瘟疫公司</font><br /><font style="font-weight:100; font-size: 18px;">Plague Inc</font>
+<div class="mycss" style="text-align: center; font-weight: 600; font-size: 300px;">
+    <font>瘟疫公司</font><br /><font style="font-weight:100; font-size: 18px;">Plague Inc</font>
+</div>
+
+
+
+<script src="js/modal_control.js"></script>
+<!--bootstrap实现弹出模态框<button class="container" data-target="#myModal" data-toggle="modal">
+    开始游戏
+</button>-->
+
+<div id="buttons">
+    <div class="custom-btn btn-8" data-target="#myModal" data-toggle="modal" style="text-align:center">
+        <span><font style="font-weight:400;font-size: 35px;">开始新游戏</font></span>
     </div>
-
-
-
-    <script src="js/modal_control.js"></script>
-    <!--bootstrap实现弹出模态框<button class="container" data-target="#myModal" data-toggle="modal">
-        开始游戏
-    </button>-->
-
-    <div id="buttons">
-        <div class="custom-btn btn-8" data-target="#myModal" data-toggle="modal" style="text-align:center">
-            <span><font style="font-weight:400;font-size: 35px;">开始新游戏</font></span>
-        </div>
-        <div class="custom-btn btn-8" style="text-align:center">
-            <span><font style="font-weight:400;font-size: 35px;">继续游戏</font></span>
-        </div>
+    <div class="custom-btn btn-8" style="text-align:center">
+        <span><font style="font-weight:400;font-size: 35px;">继续游戏</font></span>
     </div>
+</div>
 
 
 
-    <!--初始化信息的模态框-->
-    <div class="modal fade" id="myModal" aria-labelledby="myModallabel" aria-hidden="true" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h5 class="modal-title myModallabel" style="text-align:center">病毒信息初始化</h5>
-                </div>
-                <form id="formData" class="form-horizontal">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label class="control-label col-lg-2 modal-header-font">病毒名：</label>
-                            <div class="col-lg-9">
-                                <input id="input1" type="text" value="" name="username" placeholder="username" class="form-control"></br>
-                            </div>
+<!--初始化信息的模态框-->
+<div class="modal fade" id="myModal" aria-labelledby="myModallabel" aria-hidden="true" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h5 class="modal-title myModallabel" style="text-align:center">病毒信息初始化</h5>
+            </div>
+            <form id="formData" class="form-horizontal">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="control-label col-lg-2 modal-header-font">病毒名：</label>
+                        <div class="col-lg-9">
+                            <input id="input1" type="text" value="" name="username" placeholder="username" class="form-control"></br>
                         </div>
-                        <!-- <div class="form-group">
-        <label class="control-label col-lg-2 modal-header-font">类别：</label>
-        <div class="col-lg-9">
-            <select id="selectLeo" class="form-control form-control-placeholder">
-                <option value="-1" disabled selected hidden>请选择</option>
-                <option value="0" style="color: black;">蕾丝</option>
-                <option value="1" style="color: black;">黑丝</option>
-                <option value="2" style="color: black;">肉丝</option>
-                <option value="3" style="color: black;">有毒</option>
-                <option value="4" style="color: black;">青椒肉丝</option>
-            </select>
-
-        </div>
-    </div>-->
-
                     </div>
+                    <!-- <div class="form-group">
+    <label class="control-label col-lg-2 modal-header-font">类别：</label>
+    <div class="col-lg-9">
+        <select id="selectLeo" class="form-control form-control-placeholder">
+            <option value="-1" disabled selected hidden>请选择</option>
+            <option value="0" style="color: black;">蕾丝</option>
+            <option value="1" style="color: black;">黑丝</option>
+            <option value="2" style="color: black;">肉丝</option>
+            <option value="3" style="color: black;">有毒</option>
+            <option value="4" style="color: black;">青椒肉丝</option>
+        </select>
 
-                    <div class="modal-footer">
-                        <button class="btn btn-default" type="button" data-dismiss="modal">取消</button>
-                        <button class="btn btn-success modal-header-font" type="button" id="confirm1">确认</button>
-                    </div>
-                </form>
-            </div>
-        </div>
     </div>
+</div>-->
 
-    <!-- 没啥用的通知消息模态框（Modal） -->
-    <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog"  >
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                        &times;
-                    </button>
-                    <h4 class="modal-title myModallabel" style="text-align:center">
-                        地球入侵者
-                    </h4>
                 </div>
-                <div class="modal-body modal-header-font" style="text-align: left; height: 300px;">
-                    <p id="text1">  不知名病毒，欢迎来到这个伟大而美丽的世界！接下来你需要...</p>
-                    <p>你正是最合适的偷渡客。接下来你可以开始你的病毒生涯了！</p>
-                    <p>
-                        你是有资本的：那就是你的DNA点数！在游戏中，你可以通过消耗DNA点数来增强病毒的属性。告诉你个秘密吧！如果你这个贪心的家伙反悔了，可以通过点击响应属性的减号返还DNA点数！但仅返回部分点数，毕竟世界上没有免费的午餐。
-                        
-                    </p>
-                    <p>当你成功感染所有人类并让他们死于严重的症状时，你将获得胜利！但面对突如其来的瘟疫，人类将奋起反抗。他们将研发对抗病毒地特效药，越高的死亡率会让他们更加努力地研发！当特效药治愈所有人类的时候，人类将获得胜利！</p>
-                </div>
+
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">
-                        关闭
-                    </button>
-                    <!--点击切换到游戏页面-->
-                    <button type="button" class="btn btn-primary modal-header-font" onclick="window.location.href='../index.html'">
-                        开始游戏
-                    </button>
+                    <button class="btn btn-default" type="button" data-dismiss="modal">取消</button>
+                    <button class="btn btn-success modal-header-font" type="button" id="confirm1">确认</button>
                 </div>
-            </div><!-- /.modal-content -->
+            </form>
         </div>
     </div>
+</div>
+
+<!-- 没啥用的通知消息模态框（Modal） -->
+<div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog"  >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title myModallabel" style="text-align:center">
+                    地球入侵者
+                </h4>
+            </div>
+            <div class="modal-body modal-header-font" style="text-align: left; height: 300px;">
+                <p id="text1">  不知名病毒，欢迎来到这个伟大而美丽的世界！接下来你需要...</p>
+                <p>你正是最合适的偷渡客。接下来你可以开始你的病毒生涯了！</p>
+                <p>
+                    你是有资本的：那就是你的DNA点数！在游戏中，你可以通过消耗DNA点数来增强病毒的属性。告诉你个秘密吧！如果你这个贪心的家伙反悔了，可以通过点击响应属性的减号返还DNA点数！但仅返回部分点数，毕竟世界上没有免费的午餐。
+
+                </p>
+                <p>当你成功感染所有人类并让他们死于严重的症状时，你将获得胜利！但面对突如其来的瘟疫，人类将奋起反抗。他们将研发对抗病毒地特效药，越高的死亡率会让他们更加努力地研发！当特效药治愈所有人类的时候，人类将获得胜利！</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    关闭
+                </button>
+                <!--点击切换到游戏页面-->
+                <button type="button" class="btn btn-primary modal-header-font" onclick="ff()">
+                    开始游戏
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div>
+</div>
 
 
-    <!-- 弹窗 -->
-    <section id="background">
-        <div class="container">
-            <div class="background-img">
-                <span id="close-button">×</span>
-                <div class="box">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <div class="content">
-                        <h2> 危机乍现 </h2>
-                        <p id="text_weiji">All our modules are designed to play nicely with responsive of course. At the end of the day it comes down to the theme you use - our code doesn't get in your way.</p>
-                    </div>
-
+<!-- 弹窗 -->
+<section id="background">
+    <div class="container">
+        <div class="background-img">
+            <span id="close-button">×</span>
+            <div class="box">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <div class="content">
+                    <h2> 危机乍现 </h2>
+                    <p id="text_weiji">All our modules are designed to play nicely with responsive of course. At the end of the day it comes down to the theme you use - our code doesn't get in your way.</p>
                 </div>
+
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
 
 
@@ -370,82 +379,90 @@
 
 
 
-    <script src="js/watch.js"></script>
-    <script>
-        var name = "不知名病毒";
-        $(function () {
-            $("#confirm1").click(function () {
-                window.name = $('#input1').val();
-                if (name.length != 0) {
-                    $("#text1").html(name + "，欢迎来到这个伟大而美丽的星球！")
-                }
-                else {
-                    $("#text1").html("不知名病毒，欢迎来到这个伟大而美丽的星球！")
-                }
-                $("#myModal").modal('hide');
-                $("#myModal2").modal('show');
-            })
+<script src="js/watch.js"></script>
+<script>
+    var name = "不知名病毒";
+    $(function () {
+        $("#confirm1").click(function () {
+            window.name = $('#input1').val();
+            if (name.length != 0) {
+                $("#text1").html(name + "，欢迎来到这个伟大而美丽的星球！")
+            }
+            else {
+                $("#text1").html("不知名病毒，欢迎来到这个伟大而美丽的星球！")
+            }
+            $("#myModal").modal('hide');
+            $("#myModal2").modal('show');
         })
+    })
 
 
-        let wm1 = new watcher({
-            data: {
-                b: 1
-            },
-            watch: {
-                b(newVal, oldVal) {
-                    console.log("old value = ", oldVal, ",new value = ", newVal);
-                    if (newVal >= 30 && oldVal < 30) {
-                        var div = document.getElementById('background');
-                        div.style.display = "block";
-                    }
-                    if (newVal >= 40 && oldVal < 40) {
+    let wm1 = new watcher({
+        data: {
+            b: 1
+        },
+        watch: {
+            b(newVal, oldVal) {
+                console.log("old value = ", oldVal, ",new value = ", newVal);
+                if (newVal >= 30 && oldVal < 30) {
+                    var div = document.getElementById('background');
+                    div.style.display = "block";
+                    setTimeout(function () {
                         var div = document.getElementById('background');
                         div.style.display = "none";
-                    }
+                    }, 5*1000);
                 }
+
+            }
+        }
+    })
+
+/*
+    //假设每隔5秒发送一次请求
+    window.onload = function () {
+        getApi();
+    }
+    function getApi() {
+        //设置时间 5-秒  1000-毫秒  这里设置你自己想要的时间
+        setTimeout(getApi, 5 * 1000);
+        wm1.b = wm1.b + 10;
+        $.ajax({
+            url: './test.json',
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                //方法中传入的参数data为后台获取的数据
+                // console.log(data.data);
+                var country = data['country'];
+                // 根据判断条件调整框里内容
+                if (data['value'] > 0 & data['value'] < 30) {
+                    // console.log(data1);
+                    $("#text_weiji").html(country + "已经将" + window.name + "病毒列为甲级传染病。")
+                }
+
             }
         })
-
-
-        //假设每隔5秒发送一次请求
-        window.onload = function () {
-            getApi();
-        }
-        function getApi() {
-            //设置时间 5-秒  1000-毫秒  这里设置你自己想要的时间
-            setTimeout(getApi, 5 * 1000);
-            wm1.b = wm1.b + 10;
-            $.ajax({
-                url: './test.json',
-                type: 'get',
-                dataType: 'json',
-                success: function (data) {
-                    //方法中传入的参数data为后台获取的数据
-                    // console.log(data.data);
-                    var country = data['country'];
-                    // 根据判断条件调整框里内容
-                    if (data['value'] > 0 & data['value'] < 30) {
-                        // console.log(data1);
-                        $("#text_weiji").html(country + "已经将" + window.name + "病毒列为甲级传染病。")
-                    }
-
-                }
-            })
-        }
-        // 实现弹窗的手动关闭（点击窗口）
-        var close = document.getElementById('close-button');
-        var div2 = document.getElementById('background');
-        close.onclick = function close() {
+    }
+    // 实现弹窗的手动关闭（点击窗口）
+    var close = document.getElementById('close-button');
+    var div2 = document.getElementById('background');
+    close.onclick = function close() {
+        div2.style.display = "none";
+    }
+*/
+    window.onclick = function close(e) {
+        if (e.target == div2) {
             div2.style.display = "none";
         }
+    }
+    // 传参
+    function ff() {
+        //将值存入sessionStorage中
+        sessionStorage.setItem("name", window.name);
+        //跳转页面
+        location.href = "../index.html";
+    }
 
-        window.onclick = function close(e) {
-            if (e.target == div2) {
-                div2.style.display = "none";
-            }
-        }
-
-    </script>
+</script>
 </body>
 </html>

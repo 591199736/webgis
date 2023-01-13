@@ -32,11 +32,11 @@
   <script>
     window.onload = () => {
       // pie data
-      var allPopu=20000;//要看数据库里是多少
+      var allPopu=self.parent.allPopu;//要看数据库里是多少
       var allInfec = 0;
       var allDead = 0;
-      var allHealth = 0;
-      allHealth = allPopu - allDead - allInfec;
+      var allHealth = self.parent.allHealth;
+      //allHealth = allPopu - allDead - allInfec;
 
       var dom = document.getElementById('container');
       var myChart = echarts.init(dom, null, {
@@ -138,13 +138,13 @@
             //allPopu = self.parent.allPopu;
             allInfec = self.parent.allInfec;
             allDead = self.parent.allDead;
+            allHealth = self.parent.allHealth;
           }
-          allHealth = allPopu - allDead - allInfec;
+
         }
         refreshPie();
         // 三个参数
         dataInit(allInfec, allDead, allHealth);
-        main()
       }, 3000);
 
       if (option && typeof option === 'object') {

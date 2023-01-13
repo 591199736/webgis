@@ -20,7 +20,7 @@ mediStart=false;
 allPopu=7470505059;//要看数据库里是多少
 allInfec=0;
 allDead=0;
-allHealth=0;
+allHealth=7470505059;
 allDownfall=0;
 
 //游戏变量
@@ -85,8 +85,7 @@ function tradeInfect(i){
 	for (i = 0; i < ename.length; i++){
 		//没死光，没全感染
 		if (infected[i]!=population[i]-dead[i]){
-			infected[i]=infected[i]+100;//每次向外输出100个病例，该不会有国家人少得只有几千吧
-			a
+			infected[i]=infected[i]+10;//每次向外输出100个病例，该不会有国家人少得只有几千吧
 			if(infected[i]>population[i]-dead[i])//全部被感染的话不能变多
 				infected[i]=population[i]-dead[i];
 		}
@@ -100,9 +99,7 @@ function neighborInfect(i){
 			//没死光，没全感染
 			if (infected[j]!==population[j]-dead[j]){
 				infected[j]=infected[j]+100;//每次向外输出100个病例，该不会有国家人少得只有几千吧
-				allInfec+=100;
 				if (infected[j]>population[j]-dead[j]){//全部被感染的话不能变多
-					allInfec-=infected[j]-population[j]+dead[j]
 					infected[j]=population[j]-dead[j];}
 			}
 		}
@@ -111,41 +108,70 @@ function neighborInfect(i){
 
 //内部传染
 function innerInfect(i){
-	//能调用这个函数就说明一定有感染，没死光，没全感染。
-	infected[i]=infected[i]+infeSpeed[i]*(population[i]-infected[i]);
-	allInfec+=infeSpeed[i]*(population[i]-infected[i]);
-	if (infected[i]>population[i]-dead[i]){
-		allInfec-=infected[i]-population[i]+dead[i]
-		infected[i]=population[i]-dead[i];}
+	//能调用这个函数就说明一定有感染,没死光,没全感染。
+	var newInfect=Math.round(infeSpeed[i]*(population[i]-infected[i]-dead[i]));
+	if(newInfect<1){
+		newInfect=1;
+	}
+	infected[i]=infected[i]+newInfect;
+	if (infected[i]>population[i]-dead[i])
+		infected[i]=population[i]-dead[i];
+
 }
 
 //死亡
 function goDie(i){
-	var newDie=Math.round(dieSpeed[i]*infected[i]);
+	var newDie=Math.round(dieSpeed[i]*infected[i]*Math.random());
 	if(newDie<1&&(lethality+serverity>80))
 		newDie=1;
 	dead[i]=dead[i]+newDie;
-	allDead+=newDie;
 
 	infected[i]=infected[i]-newDie;
 	if (dead[i]>population[i]){
-		allDead-=dead[i]-population[i];
 		dead[i]=population[i]
 	}
 	if (infected[i]<0)
 		infected[i]=0;
+}/*
+//死亡
+function goDie(i){
+	var newDie=Math.round(dieSpeed[i]*infected[i]*(Math.random()+0.1)*0.1);
+	if(newDie<1&&(lethality+serverity>80))
+		newDie=1;
+	dead[i]=dead[i]+newDie;
+	infected[i]=infected[i]-newDie;
+	if (dead[i]>population[i])
+		dead[i]=population[i]
+	if (infected[i]<0)
+		infected[i]=0;
 }
-
+*/
 //更新mediSpeed[i]
 function refreshMediSpeed(i){
-	mediSpeed[i]=(lethality*wealthy[i]*4/serverity/antimedi+infected[i]*0.0000000002)/1000;
+	//confirm("解药！"+mediSpeed[i]);
+	mediSpeed[i]=(lethality*wealthy[i]*4/serverity/antiMedi+infected[i]*0.0000000002)/1000;
 }
+/*//更新infeSpeed[i]
+function refreshInfeSpeed(i){
+	if (temperature[i]<=0)
+		infeSpeed[i]=(Math.log(infected[i]+1)/population[i]-temperature[i]/10*antiCold/10)/(wealthy[i]+1)*Math.log(density[i]+2);
+	else if (temperature[i]>7)
+		infeSpeed[i]=(Math.log(infected[i]+1)/population[i]+temperature[i]/10*antihot/10)/(wealthy[i]+1)*Math.log(density[i]+2);
+	else
+		infeSpeed[i]=(Math.log(infected[i]+1)/population[i]+(7-temperature[i])/10*antiCold/10)/(wealthy[i]+1)*Math.log(density[i]+2);//垮台以后经济=0,但还得感染
+	if(infeSpeed[i]<0.0001)
+		infeSpeed[i]=0.0001;
+}*/
 //更新infeSpeed[i]
 function refreshInfeSpeed(i){
-	if (temperature[i]>0)
-		infeSpeed[i]=(infected[i]/population[i]+temperature[i]/10*antihot/10)/(wealthy[i]+1)*Math.log(density[i]);
-else
-	infeSpeed[i]=(infected[i]/population[i]-temperature[i]/10*anticold/10)/(wealthy[i]+1)*Math.log(density[i]);//垮台以后经济=0，但还得感染
+	if (temperature[i]<=0)
+		infeSpeed[i]=(infected[i]/population[i]-temperature[i]/10*antiCold/10)/(wealthy[i]+1)*Math.log(density[i]+2)*0.01;
+	else if (temperature[i]>7)
+		infeSpeed[i]=(infected[i]/population[i]+temperature[i]/10*antihot/10)/(wealthy[i]+1)*Math.log(density[i]+2)*0.01;
+	else
+		infeSpeed[i]=(infected[i]/population[i]+(7-temperature[i])/10*antiCold/10)/(wealthy[i]+1)*Math.log(density[i]+2)*0.01;//垮台以后经济=0,但还得感染
+	if(infeSpeed[i]<0.0001)
+		infeSpeed[i]=0.0001;
 }
 
 //更新dieSpeed[i]
@@ -155,28 +181,39 @@ function refreshDieSpeed(i){
 		dieSpeed[i]=0;
 }
 
+
 //更新世界数据
 function refreshWorld(){
-	allInfec=0;
-	allDead=0;
+	//confirm("aaaaaaaaa");
+	let allinfec=0;
+	let alldead=0;
+	let allmediSpeed=0;
 	for (i = 0; i < ename.length; i++){
-
-		//allInfec=allInfec+infected[i];
-		//allDead=allDead+dead[i];
-		allMediSpeed=allMediSpeed+mediSpeed[i];
+		allinfec=allinfec+infected[i];
+		alldead=alldead+dead[i];
+		allmediSpeed=allmediSpeed+mediSpeed[i];
 	}
-	allHealth=allPopu-allInfec-allDead;//或者剩下的就是健康人口，如果饼图可以有这个功能就可以不算。
+	if(allmediSpeed<0.001)
+	{allmediSpeed=0.001;}
+	if(allmediSpeed>1)
+	{allmediSpeed=1;}
+	allInfec=allinfec;
+	allDead=alldead;
+	allMediSpeed=allmediSpeed;
+	allHealth=allPopu-allinfec-alldead;//或者剩下的就是健康人口,如果饼图可以有这个功能就可以不算。
 }
 
 
 //超级无敌循环函数main
 
-function main(){//main每时间单元循环步骤
-	while(game==1){
+function pmain(){//main每时间单元循环步骤
+	//confirm("a");
+	//while(game==1){
 		timePlus();
 		//DNApoint=DNApoint+0.5;
-
+		//confirm("aaaaaaaaa");
 		for(i = 0; i < ename.length; i++){
+			//if(i=ename.length-1){confirm(ename.length-1)}
 			//感染了并且没死光
 			if(infected[i]>0){
 				//没垮台
@@ -235,11 +272,10 @@ function main(){//main每时间单元循环步骤
 			}
 			//完成研发!
 			if(mediPercent === 100){
-				if(infected[i]>=1000)
-					infected[i]=infected[i]-1000;
-				if(infected[i]<1000)
-					infected[i]=0;
+				if(infected[i]>=20000)
+					infected[i]=infected[i]-Math.round(20000/(antiMedi+1));
 			}
+
 		}//for每个国家结束
 
 
@@ -249,7 +285,6 @@ function main(){//main每时间单元循环步骤
 		//这里饼图不能刷新啊啊啊啊，一刷新就又看着他变大一次。
 		//如果饼图可以控制刷新频率就可以这样。如果不行的话就……很麻烦。每更新一个国家就要更新一次他
 
-
 		//更新世界统计数据：allInfec、allDead、allMediSpeed、allHealth
 		refreshWorld();
 
@@ -258,10 +293,11 @@ function main(){//main每时间单元循环步骤
 			mediStart=true;
 		}
 
-		mediPercent=mediPercent+mediSpeed[i];//显示的时候记得保留两位小数显示就行，但是不要动里面的数值
-		if(mediPercent>100){
-			mediPercent=100;
-		}
+	if(mediStart===true)
+		mediPercent=mediPercent+allMediSpeed;//显示的时候记得保留两位小数显示就行,但是不要动里面的数值
+	if(mediPercent>100){
+		mediPercent=100;
+	}
 
 		//游戏状态判断
 		if(allDead===allPopu)
@@ -271,5 +307,6 @@ function main(){//main每时间单元循环步骤
 
 
 		//在这里放显示函数，或者get的函数，每一轮结束的时候刷新一次
-	}
+//	}
+
 }
