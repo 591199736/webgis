@@ -133,6 +133,7 @@
           allPopu = self.parent.population[self.parent.ename.indexOf(self.parent.Selecting)];
           allInfec = self.parent.infected[self.parent.ename.indexOf(self.parent.Selecting)];
           allDead = self.parent.dead[self.parent.ename.indexOf(self.parent.Selecting)];
+          allHealth = allPopu-allDead-allInfec;
           }else{
             option.series[0].name="World"
             //allPopu = self.parent.allPopu;

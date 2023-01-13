@@ -25,7 +25,7 @@ allDownfall=0;
 
 //游戏变量
 var DNApoint=5;
-game=0;
+var game=0;
 
 //时间显示
 accumulate=0;	//累积时间
@@ -110,13 +110,14 @@ function neighborInfect(i){
 function innerInfect(i){
 	//能调用这个函数就说明一定有感染,没死光,没全感染。
 	var newInfect=Math.round(infeSpeed[i]*(population[i]-infected[i]-dead[i]));
-	if(newInfect<1){
+	if(newInfect<1|| window.isNaN(newInfect)){
 		newInfect=1;
 	}
+	if(i==157){console.log("eaya"+newInfect,dead[157],infected[157]);}
 	infected[i]=infected[i]+newInfect;
 	if (infected[i]>population[i]-dead[i])
 		infected[i]=population[i]-dead[i];
-
+	if(i==157){console.log("e688"+population[157],dead[157],infected[157]);}
 }
 
 //死亡
@@ -165,13 +166,14 @@ function refreshInfeSpeed(i){
 //更新infeSpeed[i]
 function refreshInfeSpeed(i){
 	if (temperature[i]<=0)
-		infeSpeed[i]=(infected[i]/population[i]-temperature[i]/10*antiCold/10)/(wealthy[i]+1)*Math.log(density[i]+2)*0.01;
+		infeSpeed[i]=(infected[i]/population[i]-temperature[i]/10*antiCold/10)/(wealthy[i]+1)*Math.log(density[i]+2)*0.001;
 	else if (temperature[i]>7)
-		infeSpeed[i]=(infected[i]/population[i]+temperature[i]/10*antihot/10)/(wealthy[i]+1)*Math.log(density[i]+2)*0.01;
+		infeSpeed[i]=(infected[i]/population[i]+temperature[i]/10*antihot/10)/(wealthy[i]+1)*Math.log(density[i]+2)*0.001;
 	else
-		infeSpeed[i]=(infected[i]/population[i]+(7-temperature[i])/10*antiCold/10)/(wealthy[i]+1)*Math.log(density[i]+2)*0.01;//垮台以后经济=0,但还得感染
+		infeSpeed[i]=(infected[i]/population[i]+(7-temperature[i])/10*antiCold/10)/(wealthy[i]+1)*Math.log(density[i]+2)*0.001;//垮台以后经济=0,但还得感染
 	if(infeSpeed[i]<0.0001)
 		infeSpeed[i]=0.0001;
+	if(mediPercent==100){infeSpeed=infeSpeed*0.1}
 }
 
 //更新dieSpeed[i]
@@ -217,20 +219,27 @@ function pmain(){//main每时间单元循环步骤
 			//感染了并且没死光
 			if(infected[i]>0){
 				//没垮台
-				if (downfall[i] == false){
+				if (downfall[i] == 0){
+					//confirm("垮台啦");
 					//if(dead[i]<population[i])，不需要，没垮台肯定没死光
 					refreshDieSpeed(i);							//更新死亡速率
 					if(mediStart){
+
 						refreshMediSpeed(i);					//更新解药速率
 					}
 					//没全感染，就感染，并且死亡
 					if(infected[i]<population[i]-dead[i]){
+						if(i==157){console.log("c"+population[157],dead[157],infected[157]);}
 						refreshInfeSpeed(i);					//更新感染速率
+						if(i==157){console.log("e"+population[157],dead[157],infected[157]);}
 						innerInfect(i);							//内部感染
+						if(i==157){console.log("b"+population[157],dead[157],infected[157]);}
 					}
-					goDie(i);									//死亡
+					goDie(i);
+					if(i==157){console.log("d"+population[157],dead[157],infected[157]);}//死亡
 					//向外传染
 					if (infected[i]>=0.01*population[i]){
+						//confirm("chuan");
 						neighborInfect(i);						//邻域传染
 						tradeInfect(tradeFriend1[i]);
 						tradeInfect(tradeFriend2[i]);
@@ -239,7 +248,9 @@ function pmain(){//main每时间单元循环步骤
 					}
 					//让它垮台!
 					if(dead[i]>=0.7*population[i]&&downfall[i]===false){
-						downfall[i]=true;
+						if(i==157){console.log("f"+population[157],dead[157],infected[157]);}
+						confirm(ename[i]+"垮台啦！")
+						downfall[i]=1;
 						allDownfall++;
 					}
 				}
@@ -249,10 +260,12 @@ function pmain(){//main每时间单元循环步骤
 					wealthy[i]=0;
 					//还没死光
 					if(dead[i]<population[i]){
+						if(i==157){console.log("g"+population[157],dead[157],infected[157]);}
 						refreshDieSpeed(i);						//更新死亡速率
 						neighborInfect(i);						//邻域传染
 						//还没全部感染
 						if(infected[i]<population[i]-dead[i]){
+							if(i==157){console.log("h"+population[157],dead[157],infected[157]);}
 							refreshInfeSpeed(i);					//更新感染速率
 							innerInfect(i);							//内部感染
 						}
@@ -263,21 +276,26 @@ function pmain(){//main每时间单元循环步骤
 			//没死光，但没感染，可以给被感染的国家喊个加油。
 			else if(dead[i]!==population[i]){
 				if(mediStart===true&&downfall[i]===false){
+					if(i==157){console.log("i"+population[157],dead[157],infected[157]);}
 					refreshMediSpeed(i);					//好吧，全人类要团结一致一起开始研发解药。
 				}
 			}
 			//死光了，所以也没有感染者了。因为都死了。
 			else{
+				if(i==157){console.log("j"+population[157],dead[157],infected[157]);}
 				mediSpeed[i]=0;
 			}
 			//完成研发!
 			if(mediPercent === 100){
-				if(infected[i]>=20000)
+				if(i==157){console.log("k"+population[157],dead[157],infected[157]);}
+				if(population[i]-infected[i]-dead[i]>=20000)
 					infected[i]=infected[i]-Math.round(20000/(antiMedi+1));
+				if(infected[i]<0){infected[i]=0;}
 			}
 
-		}//for每个国家结束
 
+		}//for每个国家结束
+	if(i==157){console.log("cccc"+population[157],dead[157],infected[157]);}
 
 		//求和看全世界的参数
 		//不能放在for每个国家里，看看能不能放在更新函数里
@@ -301,11 +319,14 @@ function pmain(){//main每时间单元循环步骤
 
 		//游戏状态判断
 		if(allDead===allPopu)
-			game=2;//玩家胜利
-		if(allInfec===0&&allPopu-allDead!== 0)
-			game=3;//人类胜利
-
-
+		{game=2;//玩家胜利
+			confirm("死完了")
+				 }
+		else if(allInfec===0&&allPopu-allDead!== 0) {
+			game = 3;//人类胜利
+			if(allPopu-allDead<=allPopu*0.01){game=4;}//人类最后的希望！
+		}
+	console.log(population[157],dead[157],infected[157]);
 		//在这里放显示函数，或者get的函数，每一轮结束的时候刷新一次
 //	}
 

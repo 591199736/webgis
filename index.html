@@ -35,7 +35,28 @@
       box-shadow: 0px 0px 5px #2a3cad;
       position: relative;
     }
-
+    .box {
+      position: absolute;
+      top: 50%;
+      left: 40%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      height: 300px;
+      background: #111845a6;
+      box-sizing: border-box;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgb(23, 32, 90);
+      border: 2px solid #2a3cad;
+      color: white;
+      padding: 20px;
+    }
+    #text_weiji{
+      width: 80%;
+      color: #fff2e2;
+    }
+    #messagetitle{
+      width: 75%;
+    }
   </style>
 
   <link href="https://js.arcgis.com/4.25/esri/themes/light/main.css" rel="stylesheet">
@@ -116,6 +137,9 @@
 
   </script><!--读数据-->
   <script>
+
+  </script><!--读档和存档-->
+  <script>
     require(["esri/config", "esri/Map", "esri/views/MapView","esri/views/SceneView","esri/layers/FeatureLayer","esri/widgets/Feature","esri/views/ui/DefaultUI","esri/core/promiseUtils"], function(esriConfig, Map, MapView,SceneView,FeatureLayer,Feature,DefaultUI,promiseUtils) {
 
       esriConfig.apiKey = "AAPK850ccb67284f4bb48e629a83a301529eQnTVfVtAZmL7wc7ah3t90KMXXYyRtz9RY3ya3sPnzxZ2fvttfWbvCs73IVub-fLE";
@@ -183,7 +207,7 @@
 
       function color1(i) {
         if(dead[i]===population[i]){
-          return "rgb(110,110,110)";
+          return "rgb(28,28,28)";
         }else{
         const theColor=infected[i]/population[i];
         return "rgb(" + Math.round(theColor* 256) + "," + "0," + "0)";}
@@ -506,9 +530,13 @@
                               infected[t]=10;
                               game = 1;
                               getApi();
-                              setInterval(() => {if(game==1){
+                              var runman =setInterval(() => {
+                                if(game==1){
                                 pmain();
-                              }},1000);
+                              }else{
+                                  gameEnd();
+                                  clearInterval(runman);//跳出循环
+                                }},1000);
                             }}
 
                           document.getElementById("CountryName").innerHTML=Selecting+"感染情况";
@@ -522,6 +550,13 @@
                   });
                   });
 
+      function gameEnd() {
+        //将值存入sessionStorage中
+        confirm("搞完了");
+        sessionStorage.setItem("game", game);
+        //跳转页面
+        location.href = "star/summary.html";
+      }
 
     })
 
@@ -623,7 +658,7 @@
           }
 
           // 感染人数达到70%*世界总人数
-          if (newVal >= allPopu*0.7 && oldVal < allPopu*0.7) {
+          if (newVal >= allPopu*0.7 && oldVal < allPopu*0.7&&mediPercent<100) {
             var div = document.getElementById('background');
             $("#text_weiji").html("人类科学家不得不带病研究，特效药研发进度放缓。")
             $("#messagetitle").html("雾海航行")
@@ -844,7 +879,7 @@
         b(newVal, oldVal) {
           console.log("old value = ", oldVal, ",new value = ", newVal);
           // 50%
-          if (newVal >= 20 && oldVal < 20) {
+          if (newVal >= 20 && oldVal < 20&&mediPercent<100) {
             var div = document.getElementById('background');
             $("#text_weiji").html("严重的症状正在折磨科学家们的身体，特效药研究进度进一步放缓。")
             $("#messagetitle").html("免疫危城")
