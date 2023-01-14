@@ -26,7 +26,7 @@ allDownfall=0;
 
 //游戏变量
 var game=0;
-var DNApoint=100;
+var DNApoint=1;
 //时间显示
 accumulate=0;	//累积时间
 year=2000;		//初始时间
