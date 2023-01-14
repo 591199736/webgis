@@ -1,10 +1,10 @@
 ﻿<!doctype html>
-<html lang="en">
+<html lang="zh-CN" style="height: 100%">
 <head>
     <meta charset="UTF-8">
-    <title>弹窗</title>
-    <link rel="stylesheet" type="text/css" href="css/css1.css">
-    <link rel="stylesheet" type="text/css" href="css/pop.css">
+    <title>开始游戏</title>
+    <link rel="stylesheet" type="text/css" href="star/css/css1.css">
+    <link rel="stylesheet" type="text/css" href="star/css/pop.css">
     <link rel="stylesheet" type="text/css" href="css/introduction.css">
     <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
@@ -12,7 +12,7 @@
     <script src="./js/tmripple.js"></script>
     <style>
         body {
-            background: url("image/background.jpg") no-repeat center center; /*加载背景图*/ /* 背景图不平铺 */
+            background: url("star/image/background.jpg") no-repeat center center; /*加载背景图*/ /* 背景图不平铺 */
             background-size: cover; /* 让背景图基于容器大小伸缩 */
             background-attachment: fixed; /* 当内容高度大于图片高度时，背景图像的位置相对于viewport固定 */
         //此条属性必须设置否则可能无效/ background-color:#CCCCCC; /* 设置背景颜色，背景图加载过程中会显示背景色 */
@@ -57,7 +57,7 @@
         }
 
         .background-img {
-            background-image: url("/image/div1.jpg");
+            background-image: url("/star/image/div1.jpg");
             height: 400px;
             width: 800px;
             background-repeat: no-repeat;
@@ -260,7 +260,7 @@ inset 4px 4px 6px 0 rgba(116, 125, 136, .3);*/
 
 
 
-<script src="js/modal_control.js"></script>
+<script src="star/js/modal_control.js"></script>
 <!--bootstrap实现弹出模态框<button class="container" data-target="#myModal" data-toggle="modal">
     开始游戏
 </button>-->
@@ -269,9 +269,9 @@ inset 4px 4px 6px 0 rgba(116, 125, 136, .3);*/
     <div class="custom-btn btn-8" data-target="#myModal" data-toggle="modal" style="text-align:center">
         <span><font style="font-weight:400;font-size: 35px;">开始新游戏</font></span>
     </div>
-    <div class="custom-btn btn-8" style="text-align:center">
+    <!--div class="custom-btn btn-8" style="text-align:center">
         <span><font style="font-weight:400;font-size: 35px;">继续游戏</font></span>
-    </div>
+    </div-->
 </div>
 
 
@@ -379,7 +379,7 @@ inset 4px 4px 6px 0 rgba(116, 125, 136, .3);*/
 
 
 
-<script src="js/watch.js"></script>
+<script src="star/js/watch.js"></script>
 <script>
     var name = "不知名病毒";
     $(function () {
@@ -460,7 +460,7 @@ inset 4px 4px 6px 0 rgba(116, 125, 136, .3);*/
         //将值存入sessionStorage中
         sessionStorage.setItem("name", window.name);
         //跳转页面
-        location.href = "../index.html";
+        location.href = "index.html";
     }
 
 </script>

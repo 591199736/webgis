@@ -12,13 +12,13 @@
 </head>
 <body>
 
-    <script type="text/javascript"
-            src="https://cdn.jsdelivr.net/gh/Fuukei/Public_Repository@latest/static/js/sakura-less.js"></script>
-    <link href='https://fonts.googleapis.com/css?family=Roboto:100,400,300,500,700' rel='stylesheet' type='text/css'>
+<script type="text/javascript"
+        src="https://cdn.jsdelivr.net/gh/Fuukei/Public_Repository@latest/static/js/sakura-less.js"></script>
+<link href='https://fonts.googleapis.com/css?family=Roboto:100,400,300,500,700' rel='stylesheet' type='text/css'>
 
     <div class="conteneur" align="center">
         <div class="css3_div">
-            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/173024/logo_css3.png" />
+            <img style="height: 100px;opacity:50%" src="image/bingdu.png" />
             <div class="txtcss">
                 <font style="font-weight:300;font-size: 45px;">山川异域，风月同天</font> <font style="font-weight:400;font-size: 45px;"></font>
                 <br />
@@ -26,7 +26,7 @@
             </div>
         </div>
         <div class="html5_div">
-            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/173024/logo_html5.png" />
+            <img style="height: 100px;opacity:50%" src="image/bingdu.png" />
             <div class="txthtml">
                 <font style="font-weight:300;font-size: 45px;"></font> <font style="font-weight:400;font-size: 45px;">战场重现</font>
                 <br />
@@ -67,103 +67,202 @@
        
     </div>
 
-        <script>
-            //假设每隔5秒发送一次请求
-            var a = 0;
-            var achieve = 5;
-            window.onload = function () {
-                getApi();
+<script>
+    var name = sessionStorage.getItem("name");
+    var achieve = sessionStorage.getItem("achievement");
+    var one = sessionStorage.getItem("time");
+    var two = sessionStorage.getItem("allHealth");
+    var three = sessionStorage.getItem("allDead");
+    var game = sessionStorage.getItem("game");
+
+    if (game == 2) {
+        $("#cgame").html("黑暗降临："+ window.name + "占领该地球")
+        $("#egame").html("You beat the game! Congradulations for you!")
+    }
+    if (game == 3) {
+        $("#cgame").html("啼破天明：人类大获全胜")
+        $("#egame").html("You lose the game. Congradulations for human-beings!")
+    }
+    if (game == 4) {
+        $("#cgame").html("人类火种终存续，纸船明烛照天烧")
+        $("#egame").html("You lose the game. Congradulations for human-beings!")
+    }
+
+    var count = 0;
+    var time1 = 0;
+    window.onload = function () {
+        getApi();
+    }
+
+    function getApi() {
+        //设置时间 5-秒  1000-毫秒  这里设置你自己想要的时间
+        setTimeout(getApi, 1 * 1000);
+        window.time1 = window.time1 + 1;
+
+        if (time1 == 4) {
+            console.log(achieve);
+            // 根据成就等级插入div
+            if (achieve[0] == 1) {
+                var div = document.getElementById('achievement');
+                // 创建li元素
+                var li = document.createElement('div')
+
+                li.setAttribute("class", "div1");
+                // 向li中添加文本内容
+                li.innerHTML = '⭐️ 限时狙击 ⭐️'
+                // 向指定div中插入li
+                div.appendChild(li);
+                count = count + 1;
             }
-            function getApi() {
-                //设置时间 5-秒  1000-毫秒  这里设置你自己想要的时间
-                setTimeout(getApi, 4 * 1000);
-                window.a = a + 1;
-                console.log(window.a);
-                if (a == 4) {
-                    // 根据成就等级插入div
-                    if (achieve >= 1) {
-                        var div = document.getElementById('achievement');
-                        // 创建li元素
-                        var li = document.createElement('div')
+            else if (achieve[0] == 2) {
+                var div = document.getElementById('achievement');
+                // 创建li元素
+                var li = document.createElement('div')
 
-                        li.setAttribute("class", "div1");
-                        // 向li中添加文本内容
-                        li.innerHTML = '⭐️ 强势入侵 ⭐️'
-                        // 向指定div中插入li
-                        div.appendChild(li);
-                    }
-                    if (achieve >= 2) {
-                        var div = document.getElementById('achievement');
-                        // 创建li元素
-                        var li = document.createElement('div')
+                li.setAttribute("class", "div1");
+                // 向li中添加文本内容
+                li.innerHTML = '⭐️ 雾海航行 ⭐️'
+                // 向指定div中插入li
+                div.appendChild(li);
+                count = count + 1;
+            }
+            else if (achieve[0] == 3) {
+                var div = document.getElementById('achievement');
+                // 创建li元素
+                var li = document.createElement('div')
 
-                        li.setAttribute("class", "div1");
-                        // 向li中添加文本内容
-                        li.innerHTML = '⭐️ 黑云压城 ⭐️'
-                        // 向指定div中插入li
-                        div.appendChild(li);
-                    }
-                    if (achieve >= 3) {
-                        var div = document.getElementById('achievement');
-                        // 创建li元素
-                        var li = document.createElement('div')
+                li.setAttribute("class", "div1");
+                // 向li中添加文本内容
+                li.innerHTML = '⭐️ 最后高地 ⭐️'
+                // 向指定div中插入li
+                div.appendChild(li);
+                count = count + 1;
+            }
+            else if (achieve[0] == 4) {
+                var div = document.getElementById('achievement');
+                // 创建li元素
+                var li = document.createElement('div')
 
-                        li.setAttribute("class", "div1");
-                        // 向li中添加文本内容
-                        li.innerHTML = '⭐️ 最后高地 ⭐️'
-                        // 向指定div中插入li
-                        div.appendChild(li);
-                    }
-                    if (achieve >= 4) {
-                        var div = document.getElementById('achievement');
-                        // 创建li元素
-                        var li = document.createElement('div')
+                li.setAttribute("class", "div1");
+                // 向li中添加文本内容
+                li.innerHTML = '⭐️ 鬼火燎原 ⭐️'
+                // 向指定div中插入li
+                div.appendChild(li);
+                count = count + 1;
+            }
+            if (achieve[2] == 1) {
+                var div = document.getElementById('achievement');
+                // 创建li元素
+                var li = document.createElement('div')
 
-                        li.setAttribute("class", "div1");
-                        // 向li中添加文本内容
-                        li.innerHTML = '⭐️ 鬼火燎原 ⭐️'
-                        // 向指定div中插入li
-                        div.appendChild(li);
-                    }
-                    if (achieve >= 5) {
-                        var div = document.getElementById('achievement');
-                        // 创建li元素
-                        var li = document.createElement('div')
+                li.setAttribute("class", "div1");
+                // 向li中添加文本内容
+                li.innerHTML = '⭐️ 人类不死 ⭐️'
+                // 向指定div中插入li
+                div.appendChild(li);
+                count = count + 1;
+            }
+            if (achieve[4] == 1) {
+                var div = document.getElementById('achievement');
+                // 创建li元素
+                var li = document.createElement('div')
 
-                        li.setAttribute("class", "div1");
-                        // 向li中添加文本内容
-                        li.innerHTML = '⭐️ 异世主宰 ⭐️'
-                        // 向指定div中插入li
-                        div.appendChild(li);
-                    }
-                    var div = document.getElementById('box');
-                    div.style.display = "flex";
+                li.setAttribute("class", "div1");
+                // 向li中添加文本内容
+                li.innerHTML = '⭐️ 临危不乱 ⭐️'
+                // 向指定div中插入li
+                div.appendChild(li);
+                count = count + 1;
+            }
+            if (achieve[6] == 1) {
+                var div = document.getElementById('achievement');
+                // 创建li元素
+                var li = document.createElement('div')
+
+                li.setAttribute("class", "div1");
+                // 向li中添加文本内容
+                li.innerHTML = '⭐️ 恐怖肆虐 ⭐️'
+                // 向指定div中插入li
+                div.appendChild(li);
+                count = count + 1;
+            }
+            else if (achieve[6] == 2) {
+                var div = document.getElementById('achievement');
+                // 创建li元素
+                var li = document.createElement('div')
+
+                li.setAttribute("class", "div1");
+                // 向li中添加文本内容
+                li.innerHTML = '⭐️ 管控无力 ⭐️'
+                // 向指定div中插入li
+                div.appendChild(li);
+                count = count + 1;
+            }
+            if (achieve[8] == 1) {
+                var div = document.getElementById('achievement');
+                // 创建li元素
+                var li = document.createElement('div')
+
+                li.setAttribute("class", "div1");
+                // 向li中添加文本内容
+                li.innerHTML = '⭐️ 医者仁心 ⭐️'
+                // 向指定div中插入li
+                div.appendChild(li);
+                count = count + 1;
+            }
+            if (achieve[10] == 1 && count < 5) {
+                var div = document.getElementById('achievement');
+                // 创建li元素
+                var li = document.createElement('div')
+
+                li.setAttribute("class", "div1");
+                // 向li中添加文本内容
+                li.innerHTML = '⭐️ 免疫危城 ⭐️'
+                // 向指定div中插入li
+                div.appendChild(li);
+                count = count + 1;
+            }
+            if (achieve[12] == 1 && count < 5) {
+                var div = document.getElementById('achievement');
+                // 创建li元素
+                var li = document.createElement('div')
+
+                li.setAttribute("class", "div1");
+                // 向li中添加文本内容
+                li.innerHTML = '⭐️ 人类奇迹 ⭐️'
+                // 向指定div中插入li
+                div.appendChild(li);
+                count = count + 1;
+            }
+            console.log(count);
+            var div = document.getElementById('box');
+            div.style.display = "flex";
+        }
+    }
+
+
+    // 统计数据的滚动显示：targetNum为最终数值，delay为效果持续时间
+    function numscroll(elementID, targetNum, delay) {
+        let a = document.getElementById(elementID);
+        let timmerA = setInterval(function () {
+            if (a.innerText != targetNum) {
+                let num = Number(a.innerText);
+                num += Number((targetNum / delay / 10).toFixed(0)); //若有小数需求可自行修改此行
+                if (num < targetNum) {        //针对有余数除不尽
+                    a.innerText = num;
+                } else {
+                    a.innerText = targetNum;
                 }
+            } else {
+                clearInterval(timmerA)
             }
-
-
-            // 统计数据的滚动显示：targetNum为最终数值，delay为效果持续时间
-            function numscroll(elementID, targetNum, delay) {
-                let a = document.getElementById(elementID);
-                let timmerA = setInterval(function () {
-                    if (a.innerText != targetNum) {
-                        let num = Number(a.innerText);
-                        num += Number((targetNum / delay / 10).toFixed(0)); //若有小数需求可自行修改此行
-                        if (num < targetNum) {        //针对有余数除不尽
-                            a.innerText = num;
-                        } else {
-                            a.innerText = targetNum;
-                        }
-                    } else {
-                        clearInterval(timmerA)
-                    }
-                }, 100)
-            }
-            // 测试数据 到时候换成我们的
-            numscroll('one', 98501, 50);
-            numscroll('two', 2000, 50);
-            numscroll('three', 15000, 50);
-        </script>
+        }, 100)
+    }
+    // 测试数据 到时候换成我们的
+    numscroll('one', one, 5);
+    numscroll('two', two, 5);
+    numscroll('three', three, 5);
+</script>
 
 </body>
 </html>

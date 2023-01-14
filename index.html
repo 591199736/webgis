@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta content="initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport" />
-  <title>ArcGIS API for JavaScript Tutorials: Display a map</title>
+  <title>决定世界的命运！</title>
 
   <style>
     html,
@@ -69,7 +69,6 @@
   <link rel="stylesheet" type="text/css" href="star/css/introduction.css">
   <!--script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.1/dist/echarts.min.js"></script>不太理解为什么引入这个之后会出错-->
   <script>
-    ff1();
     var Selecting;
     var ename=[];
     var temperature=[];
@@ -138,6 +137,38 @@
 
   </script><!--读数据-->
   <script>
+    function Re() {
+      let go = true;
+      try {
+
+        restart();
+      } catch (e) {
+        alert("读取失败");
+        go = false;
+      }
+      if (go) {
+        getApi();
+        var runman = setInterval(() => {
+          if (game == 1) {
+            pmain();
+          } else {
+            gameEnd();
+            clearInterval(runman);//跳出循环
+          }
+        }, 1000);
+      }
+    }
+    function Ld() {
+      let go = true;
+      try {
+        DNApoint=$("#fDNA")[0].contentWindow.thevue.$data.availableCount;
+        editVirusInfo();//存入数据库的函数
+        editCountryInfo();
+      } catch (e) {
+        alert("存档失败");
+        go = false;
+      }
+    }
 
   </script><!--读档和存档-->
   <script>
@@ -208,7 +239,7 @@
 
       function color1(i) {
         if(dead[i]===population[i]){
-          return "rgb(28,28,28)";
+          return "rgb(100,0,0)";
         }else{
         const theColor=infected[i]/population[i];
         return "rgb(" + Math.round(theColor* 256) + "," + "0," + "0)";}
@@ -531,19 +562,20 @@
                               infected[t]=10;
                               game = 1;
                               getApi();
+                              document.getElementById("MyName").innerHTML=Myname+"将决定世界的命运！";
                               var runman =setInterval(() => {
                                 if(game==1){
                                 pmain();
                               }else{
                                   gameEnd();
                                   clearInterval(runman);//跳出循环
-                                }},1000);
+                                }},1000/300);
                             }}
 
                           document.getElementById("CountryName").innerHTML=Selecting+"感染情况";
                         } else{document . getElementById("CountryName").innerHTML="世界感染情况";
                         }
-                      }, 1000/30);//速度
+                      }, 1000/10);//速度
                       // Update at 30fps
 
                       //confirm("hi "+Selecting);
@@ -553,8 +585,17 @@
 
       function gameEnd() {
         //将值存入sessionStorage中
-        confirm("搞完了");
+        console.log("ach:",achievement);
+        alert("游戏结束，即将进入结算页面");
+
+        if(allHealth==allPopu){achievement[6]=1;}
+        sessionStorage.setItem("name", name);
         sessionStorage.setItem("game", game);
+        sessionStorage.setItem("achievement", achievement);
+        sessionStorage.setItem("allDead", allDead);
+        sessionStorage.setItem("allHealth", MaxInfe);
+        sessionStorage.setItem("time", accumulate);//累计时间
+
         //跳转页面
         location.href = "star/summary.html";
       }
@@ -594,12 +635,12 @@
   </script><!--这是那个时间的代码-->
   <script src="star/js/watch.js"></script>
   <script>
-
+    var Myname = "不知名寄生物";
+    if(sessionStorage.getItem("name")!==null){
+      window.Myname = sessionStorage.getItem("name");}
     function ff1() {
       //从sessionStorage中取值
-      var Myname = "不知名病毒";
-      if(sessionStorage.getItem("name")!==null){
-         window.name = sessionStorage.getItem("name");}
+      alert(Myname);
       document.getElementById("MyName").innerHTML="你好，"+Myname+"！感染全世界吧！";
     }
     // 世界感染人数
@@ -613,7 +654,7 @@
           // 感染人数达到一百
           if (newVal >= 100 && oldVal < 100) {
             var div = document.getElementById('background');
-            $("#text_weiji").html("第一例感染病例在地球上被发现，科学家将其命名为" + window.name + "。")
+            $("#text_weiji").html("第一例感染病例在地球上被发现，科学家将其命名为" + window.Myname + "。")
             $("#messagetitle").html("危机乍起")
             div.style.display = "block";
             setTimeout(function () {
@@ -656,6 +697,7 @@
               var div = document.getElementById('background');
               div.style.display = "none";
             }, 5 * 1000);
+            achievement[0]=1;
           }
 
           // 感染人数达到70%*世界总人数
@@ -668,6 +710,7 @@
               var div = document.getElementById('background');
               div.style.display = "none";
             }, 5 * 1000);
+            achievement[0]=2;
           }
 
           // 世界感染人数达到90%*世界总人数
@@ -680,18 +723,20 @@
               var div = document.getElementById('background');
               div.style.display = "none";
             }, 5 * 1000);
+            achievement[0]=3;
           }
 
           // 世界感染人数达到世界总人数
           if (newVal >= allPopu && oldVal < allPopu){
             var div = document.getElementById('background');
-            $("#text_weiji").html("世界上最后一个仅存地健康人类也被感染，您的病毒已经感染全人类！他们能否在这场传染性极高的瘟疫中获得胜利呢？")
+            $("#text_weiji").html("世界上最后一个仅存地健康人类也被感染，" + window.Myname + "已经感染全人类！他们能否在这场传染性极高的瘟疫中获得胜利呢？")
             $("#messagetitle").html("鬼火燎原")
             div.style.display = "block";
             setTimeout(function () {
               var div = document.getElementById('background');
               div.style.display = "none";
             }, 5 * 1000);
+            achievement[0]=4;
           }
 
         }
@@ -704,11 +749,11 @@
       },
       watch: {
         b(newVal, oldVal) {
-          console.log("old value = ", oldVal, ",new value = ", newVal);
+         // console.log("old value = ", oldVal, ",new value = ", newVal);
           // 死亡人数达到一百
           if (newVal >= 100 && oldVal < 100) {
             var div = document.getElementById('background');
-            $("#text_weiji").html(window.name + "病毒杀伤力超过黑死病。")
+            $("#text_weiji").html(window.Myname + "杀伤力超过黑死病。")
             $("#messagetitle").html("病情公报")
             div.style.display = "block";
             setTimeout(function () {
@@ -717,7 +762,7 @@
             }, 5 * 1000);
           }
 
-          // 死亡人数达到一百
+          // 死亡人数达到90%
           if (newVal >= allPopu*0.9 && oldVal < allPopu*0.9) {
             var div = document.getElementById('background');
             $("#text_weiji").html("全球幸存人口仅剩下10%！但他们依旧没有放弃反抗。")
@@ -727,6 +772,7 @@
               var div = document.getElementById('background');
               div.style.display = "none";
             }, 5 * 1000);
+            achievement[1]=1;
           }
 
         }
@@ -743,7 +789,7 @@
           // 感染人数达到30%*中国人口总数
           if (newVal >= 0.3*population[ename.indexOf("China")] && oldVal < 0.3*population[ename.indexOf("China")] ) {
             var div = document.getElementById('background');
-            $("#text_weiji").html("中国政府已将"+window.name + "列为甲级传染病。")
+            $("#text_weiji").html("中国政府已将"+window.Myname + "列为甲级传染病。")
             $("#messagetitle").html("疫情蔓延")
             div.style.display = "block";
             setTimeout(function () {
@@ -762,6 +808,7 @@
               var div = document.getElementById('background');
               div.style.display = "none";
             }, 5 * 1000);
+            achievement[2]=1;
           }
 
         }
@@ -785,6 +832,7 @@
               var div = document.getElementById('background');
               div.style.display = "none";
             }, 5 * 1000);
+            achievement[3]=1;
           }
 
           // 美国感染人数=美国人口总数
@@ -797,6 +845,7 @@
               var div = document.getElementById('background');
               div.style.display = "none";
             }, 5 * 1000);
+            achievement[3]=2;
           }
 
         }
@@ -932,9 +981,9 @@
   </div>
   <div class="header-time">
     <span id="time"></span>
-    <button style="width: 40px" onclick="ff1()">
+    <button style="width: 40px" onclick="Re()">
       读档</button>
-    <button style="width: 40px;margin-left: 5px" onclick="ff1()">
+    <button style="width: 40px;margin-left: 5px" onclick="Ld()">
     存档</button>
   </div>
 </div>
@@ -965,7 +1014,7 @@
     <div class="left-body" >
       <div class="left-top public-bg">
         <div class="public-title">DNA分配</div>
-        <iframe class="ifream1" src="./html/bar.html"></iframe>
+        <iframe id="fDNA" class="ifream1" src="./html/bar.html"></iframe>
       </div>
 
       <div class="left-bottom public-bg">

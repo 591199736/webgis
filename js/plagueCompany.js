@@ -19,25 +19,24 @@ allMediSpeed=0;
 mediStart=false;
 allPopu=7470505059;//要看数据库里是多少
 allInfec=0;
+MaxInfe=0
 allDead=0;
 allHealth=7470505059;
 allDownfall=0;
 
 //游戏变量
-var DNApoint=5;
 var game=0;
-
+var DNApoint=100;
 //时间显示
 accumulate=0;	//累积时间
 year=2000;		//初始时间
 month=1;
 day=1;
 
-
+var achievement=[0,0,0,0,0,0,0];
 
 
 //前端：选取初始国家，将该国家的infected[i]++，然后让game=1
-
 
 
 var dayMax;
@@ -85,7 +84,7 @@ function tradeInfect(i){
 	for (i = 0; i < ename.length; i++){
 		//没死光，没全感染
 		if (infected[i]!=population[i]-dead[i]){
-			infected[i]=infected[i]+10;//每次向外输出100个病例，该不会有国家人少得只有几千吧
+			infected[i]=infected[i]+5;//每次向外输出100个病例，该不会有国家人少得只有几千吧
 			if(infected[i]>population[i]-dead[i])//全部被感染的话不能变多
 				infected[i]=population[i]-dead[i];
 		}
@@ -123,10 +122,9 @@ function innerInfect(i){
 //死亡
 function goDie(i){
 	var newDie=Math.round(dieSpeed[i]*infected[i]*Math.random());
-	if(newDie<1&&(lethality+serverity>80))
+	if(newDie<1&&newDie<infected[1]&&downfall[i]==1||newDie<1&&(lethality+serverity>80))
 		newDie=1;
 	dead[i]=dead[i]+newDie;
-
 	infected[i]=infected[i]-newDie;
 	if (dead[i]>population[i]){
 		dead[i]=population[i]
@@ -241,10 +239,10 @@ function pmain(){//main每时间单元循环步骤
 					if (infected[i]>=0.01*population[i]){
 						//confirm("chuan");
 						neighborInfect(i);						//邻域传染
-						tradeInfect(tradeFriend1[i]);
-						tradeInfect(tradeFriend2[i]);
-						tradeInfect(tradeFriend3[i]);
-						tradeInfect(tradeFriend4[i]);
+						tradeInfect(tradeFriend1[i-1]);
+						tradeInfect(tradeFriend2[i-1]);
+						tradeInfect(tradeFriend3[i-1]);
+						tradeInfect(tradeFriend4[i-1]);
 					}
 					//让它垮台!
 					if(dead[i]>=0.7*population[i]&&downfall[i]===false){
@@ -307,7 +305,7 @@ function pmain(){//main每时间单元循环步骤
 		refreshWorld();
 
 		//判断开始研发。这个最好能写进触发器。
-		if(allInfec>=50000){
+		if(allInfec>=100000){
 			mediStart=true;
 		}
 
@@ -316,7 +314,8 @@ function pmain(){//main每时间单元循环步骤
 	if(mediPercent>100){
 		mediPercent=100;
 	}
-
+	if(allInfec>MaxInfe)
+	MaxInfe=allInfec
 		//游戏状态判断
 		if(allDead===allPopu)
 		{game=2;//玩家胜利
