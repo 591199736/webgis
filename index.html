@@ -160,7 +160,7 @@
     var clk_sp=false;
  function sp() {
    if (clk_sp == false) {
-     clk_sp = confirm("DNA点数的增加速率不会改变，是否继续？")
+     clk_sp = confirm("DNA点数的增加速率不会改变，是否继续？\ntips:多次调整速度有时会导致地图显示失效")
    }
    if (clk_sp) {
      RefreshSpeed = 1000 / document.getElementById('RfS').value;
@@ -497,13 +497,12 @@
       // layer.refreshInterval = 0.1;
 
       //document.getElementsByClassName("top-left-title").innerHTML=Selecting;
-      setInterval(() => {
+      var refreshMap=setInterval(() => {
   //for(i=0;i<206;i++){const living=Math.random()*population[i];infected[i]=Math.random()*living;dead[i]=population[i]-living;}
           layer.renderer = rend();
           requestAnimationFrame(layer);
           if(mediPercent>0){confirm(mediPercent)}
-  //confirm(DNApoint);
-      }, 1000 )
+      }, 1000 );
       //如果需要条件判断可以用setTimeout+for循环
 
       view.when().then(() => {
@@ -1020,7 +1019,7 @@
         <iframe class="ifream1" src="./html/pie-simple.html"></iframe>
       </div>
       <div class="left-con public-bg">
-        <input id="RfS" type="number" min="0.2" max="100" step="1" value="1" style="margin-left: 25%;margin-top: 30px">
+        <input id="RfS" type="number" min="1" max="100" step="1" value="1" style="margin-left: 25%;margin-top: 30px">
         <button style="width: 40px;margin-left: 5px" onclick="sp()">倍速</button></div>
     </div>
 
