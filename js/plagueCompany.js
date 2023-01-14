@@ -16,7 +16,7 @@ lethality = 1;
 //世界变量
 mediPercent=0;
 allMediSpeed=0;
-mediStart=false;
+mediStart=0;
 allPopu=7470505059;//要看数据库里是多少
 allInfec=0;
 MaxInfe=0
@@ -119,16 +119,16 @@ function innerInfect(i){
 	if(i==157){console.log("e688"+population[157],dead[157],infected[157]);}
 }
 
+
 //死亡
 function goDie(i){
-	var newDie=Math.round(dieSpeed[i]*infected[i]*Math.random());
-	if(newDie<1&&newDie<infected[1]&&downfall[i]==1||newDie<1&&(lethality+serverity>80))
-		newDie=1;
+	var newDie=Math.round(dieSpeed[i]*infected[i]*(Math.random()+0.1)*0.1);
+	if(newDie<1000&&(lethality+serverity>80))
+		newDie=1000;
 	dead[i]=dead[i]+newDie;
 	infected[i]=infected[i]-newDie;
-	if (dead[i]>population[i]){
+	if (dead[i]>population[i])
 		dead[i]=population[i]
-	}
 	if (infected[i]<0)
 		infected[i]=0;
 }/*
@@ -273,7 +273,7 @@ function pmain(){//main每时间单元循环步骤
 			}
 			//没死光，但没感染，可以给被感染的国家喊个加油。
 			else if(dead[i]!==population[i]){
-				if(mediStart===true&&downfall[i]===false){
+				if(mediStart===true&&downfall[i]===0){
 					if(i==157){console.log("i"+population[157],dead[157],infected[157]);}
 					refreshMediSpeed(i);					//好吧，全人类要团结一致一起开始研发解药。
 				}
@@ -287,7 +287,7 @@ function pmain(){//main每时间单元循环步骤
 			if(mediPercent === 100){
 				if(i==157){console.log("k"+population[157],dead[157],infected[157]);}
 				if(population[i]-infected[i]-dead[i]>=20000)
-					infected[i]=infected[i]-Math.round(20000/(antiMedi+1));
+					infected[i]=infected[i]-Math.round(20000/(antiMedi+1)+1);
 				if(infected[i]<0){infected[i]=0;}
 			}
 
@@ -306,10 +306,10 @@ function pmain(){//main每时间单元循环步骤
 
 		//判断开始研发。这个最好能写进触发器。
 		if(allInfec>=100000){
-			mediStart=true;
+			mediStart=1;
 		}
 
-	if(mediStart===true)
+	if(mediStart===1)
 		mediPercent=mediPercent+allMediSpeed;//显示的时候记得保留两位小数显示就行,但是不要动里面的数值
 	if(mediPercent>100){
 		mediPercent=100;

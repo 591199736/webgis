@@ -239,9 +239,9 @@
 
       function color1(i) {
         if(dead[i]===population[i]){
-          return "rgb(100,0,0)";
+          return "rgb(21,9,9)";
         }else{
-        const theColor=infected[i]/population[i];
+        const theColor=infected[i]/population[i]-dead[i];
         return "rgb(" + Math.round(theColor* 256) + "," + "0," + "0)";}
           //return "rgb(255,0,0)";}
       }
@@ -569,13 +569,13 @@
                               }else{
                                   gameEnd();
                                   clearInterval(runman);//跳出循环
-                                }},1000/3);
+                                }},1000/3);//速度
                             }}
 
                           document.getElementById("CountryName").innerHTML=Selecting+"感染情况";
                         } else{document . getElementById("CountryName").innerHTML="世界感染情况";
                         }
-                      }, 1000);//速度
+                      }, 1000);
                       // Update at 30fps
 
                       //confirm("hi "+Selecting);
