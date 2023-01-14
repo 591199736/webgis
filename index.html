@@ -69,6 +69,9 @@
   <link rel="stylesheet" type="text/css" href="star/css/introduction.css">
   <!--script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.4.1/dist/echarts.min.js"></script>不太理解为什么引入这个之后会出错-->
   <script>
+    var RefreshSpeed=1000;//速率
+    var runman;
+
     var Selecting;
     var ename=[];
     var temperature=[];
@@ -137,37 +140,48 @@
 
   </script><!--读数据-->
   <script>
-    function Re() {
-      let go = true;
-      try {
+    function gameEnd() {
+      //将值存入sessionStorage中
+      console.log("ach:",achievement);
+      alert("游戏结束，即将进入结算页面");
 
-        restart();
-      } catch (e) {
-        alert("读取失败");
-        go = false;
-      }
-      if (go) {
-        getApi();
-        var runman = setInterval(() => {
-          if (game == 1) {
-            pmain();
-          } else {
-            gameEnd();
-            clearInterval(runman);//跳出循环
-          }
-        }, 1000);
-      }
+      if(allDead==0){achievement[6]=1;}
+      sessionStorage.setItem("name", name);
+      sessionStorage.setItem("game", game);
+      sessionStorage.setItem("achievement", achievement);
+      sessionStorage.setItem("allDead", allDead);
+      sessionStorage.setItem("allHealth", MaxInfe);
+      sessionStorage.setItem("time", accumulate);//累计时间
+
+      //跳转页面
+      location.href = "star/summary.html";
+    }
+
+    var clk_sp=false;
+ function sp() {
+   if (clk_sp == false) {
+     clk_sp = confirm("DNA点数的增加速率不会改变，是否继续？")
+   }
+   if (clk_sp) {
+     RefreshSpeed = 1000 / document.getElementById('RfS').value;
+     clearInterval(runman);//跳出循环
+     runman = setInterval(() => {
+       if (game == 1) {
+         pmain();
+       } else {
+         gameEnd();
+         clearInterval(runman);//跳出循环
+       }
+     }, RefreshSpeed);//速度
+   }
+ }
+  </script>
+  <script>
+    function Re() {
+      alert("不准读档");
     }
     function Ld() {
-      let go = true;
-      try {
-        DNApoint=$("#fDNA")[0].contentWindow.thevue.$data.availableCount;
-        editVirusInfo();//存入数据库的函数
-        editCountryInfo();
-      } catch (e) {
-        alert("存档失败");
-        go = false;
-      }
+      alert("不准存档");
     }
 
   </script><!--读档和存档-->
@@ -489,7 +503,7 @@
           requestAnimationFrame(layer);
           if(mediPercent>0){confirm(mediPercent)}
   //confirm(DNApoint);
-      }, 6000 )
+      }, 1000 )
       //如果需要条件判断可以用setTimeout+for循环
 
       view.when().then(() => {
@@ -563,13 +577,13 @@
                               game = 1;
                               getApi();
                               document.getElementById("MyName").innerHTML=Myname+"将决定世界的命运！";
-                              var runman =setInterval(() => {
+                              runman =setInterval(() => {
                                 if(game==1){
                                 pmain();
                               }else{
                                   gameEnd();
                                   clearInterval(runman);//跳出循环
-                                }},1000/3);//速度
+                                }},RefreshSpeed);//速度
                             }}
 
                           document.getElementById("CountryName").innerHTML=Selecting+"感染情况";
@@ -583,22 +597,6 @@
                   });
                   });
 
-      function gameEnd() {
-        //将值存入sessionStorage中
-        console.log("ach:",achievement);
-        alert("游戏结束，即将进入结算页面");
-
-        if(allHealth==allPopu){achievement[6]=1;}
-        sessionStorage.setItem("name", name);
-        sessionStorage.setItem("game", game);
-        sessionStorage.setItem("achievement", achievement);
-        sessionStorage.setItem("allDead", allDead);
-        sessionStorage.setItem("allHealth", MaxInfe);
-        sessionStorage.setItem("time", accumulate);//累计时间
-
-        //跳转页面
-        location.href = "star/summary.html";
-      }
 
     })
 
@@ -1017,10 +1015,13 @@
         <iframe id="fDNA" class="ifream1" src="./html/bar.html"></iframe>
       </div>
 
-      <div class="left-bottom public-bg">
+      <div class="left-bottom ">
         <div class="public-title" id="CountryName">世界感染情况</div>
         <iframe class="ifream1" src="./html/pie-simple.html"></iframe>
       </div>
+      <div class="left-con public-bg">
+        <input id="RfS" type="number" min="0.2" max="100" step="1" value="1" style="margin-left: 25%;margin-top: 30px">
+        <button style="width: 40px;margin-left: 5px" onclick="sp()">倍速</button></div>
     </div>
 
     <div class="center-body">

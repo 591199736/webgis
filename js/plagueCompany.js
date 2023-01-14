@@ -148,7 +148,7 @@ function goDie(i){
 //更新mediSpeed[i]
 function refreshMediSpeed(i){
 	//confirm("解药！"+mediSpeed[i]);
-	mediSpeed[i]=(lethality*wealthy[i]*4/serverity/antiMedi+infected[i]*0.0000000002)/1000;
+	mediSpeed[i]=(lethality*wealthy[i]*4/serverity/antiMedi+infected[i]*0.0000000002)/10000;
 }
 /*//更新infeSpeed[i]
 function refreshInfeSpeed(i){
@@ -171,7 +171,7 @@ function refreshInfeSpeed(i){
 		infeSpeed[i]=(infected[i]/population[i]+(7-temperature[i])/10*antiCold/10)/(wealthy[i]+1)*Math.log(density[i]+2)*0.001;//垮台以后经济=0,但还得感染
 	if(infeSpeed[i]<0.0001)
 		infeSpeed[i]=0.0001;
-	if(mediPercent==100){infeSpeed=infeSpeed*0.1}
+	if(mediPercent==100){infeSpeed=infeSpeed*0.001}
 }
 
 //更新dieSpeed[i]
@@ -207,6 +207,7 @@ function refreshWorld(){
 //超级无敌循环函数main
 
 function pmain(){//main每时间单元循环步骤
+	if(lethality==0){lethality=0.00001;}
 	//confirm("a");
 	//while(game==1){
 		timePlus();
@@ -221,7 +222,7 @@ function pmain(){//main每时间单元循环步骤
 					//confirm("垮台啦");
 					//if(dead[i]<population[i])，不需要，没垮台肯定没死光
 					refreshDieSpeed(i);							//更新死亡速率
-					if(mediStart){
+					if(mediStart==1){
 
 						refreshMediSpeed(i);					//更新解药速率
 					}
@@ -275,7 +276,8 @@ function pmain(){//main每时间单元循环步骤
 			else if(dead[i]!==population[i]){
 				if(mediStart===true&&downfall[i]===0){
 					if(i==157){console.log("i"+population[157],dead[157],infected[157]);}
-					refreshMediSpeed(i);					//好吧，全人类要团结一致一起开始研发解药。
+					refreshMediSpeed(i);
+					mediSpeed[i]=mediSpeed*0.1//好吧，全人类要团结一致一起开始研发解药。但是小摆一下没问题吧
 				}
 			}
 			//死光了，所以也没有感染者了。因为都死了。
@@ -286,9 +288,13 @@ function pmain(){//main每时间单元循环步骤
 			//完成研发!
 			if(mediPercent === 100){
 				if(i==157){console.log("k"+population[157],dead[157],infected[157]);}
-				if(population[i]-infected[i]-dead[i]>=20000)
+				if(population[i]-infected[i]-dead[i]>=20000) {
 					infected[i]=infected[i]-Math.round(20000/(antiMedi+1)+1);
-				if(infected[i]<0){infected[i]=0;}
+				}else if(infected[i]>0){
+					infected[i]=infected[i]-Math.round(infected[i]*(Math.random()+0.1)*0.5)-10;
+				}
+
+				if(infected[i]<100){infected[i]=0;}
 			}
 
 

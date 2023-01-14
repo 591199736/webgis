@@ -322,7 +322,7 @@
   setInterval(() => {
     if(self.parent.game==1){
     thevue.$data.availableCount+=0.1;}
-  }, 1000 );
+  }, self.parent.RefreshSpeed);
 
  function changeDNA() {
    self.parent.antihot=thevue.$data.customColors[0].percentage;
